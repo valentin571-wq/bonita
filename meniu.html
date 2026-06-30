@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Bonita - Meniu Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-luxury { font-family: 'Cormorant Garamond', serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        
+        
+        
+        
+    </style>
+</head>
+<body class="bg-zinc-950 text-stone-200 min-h-screen pb-24 selection:bg-amber-400 selection:text-black">
+
+    <div id="banner-oferta" class="hidden bg-stone-900 text-amber-400 text-xs uppercase tracking-widest py-3 px-4 text-center sticky top-0 z-50 border-b border-amber-500/20 backdrop-blur-md bg-stone-900/90 transition-all duration-300">
+        <p id="text-oferta" class="font-medium opacity-90"></p>
+    </div>
+
+    <div class="fixed bottom-8 right-8 z-50">
+        <button id="btn-limba" onclick="comutaLimba()" class="bg-stone-900/80 backdrop-blur-md hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-800 rounded-full px-5 py-3 flex items-center gap-2 text-xs tracking-widest uppercase transition-all duration-300 shadow-2xl active:scale-95">
+            <span id="text-limba-buton">English</span>
+        </button>
+    </div>
+
+   <header class="relative h-[45vh] flex flex-col justify-center items-center text-center px-4 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(9, 9, 11, 0.4), rgba(9, 9, 11, 1)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=80');">
+    
+    <!-- BUTON APEL LUXURY EXTINS PERMANENT -->
+    <div class="absolute top-6 right-6 z-30">
+        <a href="tel:+40371111555" class="flex items-center gap-2.5 bg-zinc-950/60 backdrop-blur-md border border-amber-400/40 py-2 px-4 rounded-full text-amber-400 shadow-lg shadow-black/30 transition-all duration-300 hover:border-amber-400 hover:bg-zinc-950/80">
+            
+            <!-- TEXTUL (Extins permanent, adaptat pentru mobil/desktop) -->
+            <span class="text-[10px] uppercase tracking-[0.2em] font-medium text-stone-100 whitespace-nowrap">
+                <span class="md:hidden" data-ro="Comandă" data-en="Call">Comandă</span>
+                <span class="hidden md:inline" data-ro="Comandă telefonică" data-en="Call Now">Comandă</span>
+            </span>
+            
+            <!-- ICONIȚA ÎN DREAPTA -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 shrink-0 text-amber-400">
+                <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.865l-1.785 1.34a10.584 10.584 0 0 0 5.167 5.167l1.34-1.785a1.875 1.875 0 0 1 1.865-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
+            </svg>
+        </a>
+    </div>
+
+    <div class="max-w-3xl">
+        <h1 class="text-5xl md:text-7xl font-luxury tracking-wide text-stone-100 font-light">Pizza Bonita</h1>
+        <div class="w-12 h-[1px] bg-amber-400/50 mx-auto my-4"></div>
+        <p id="hero-subtitlu" class="text-stone-400 text-xs md:text-sm uppercase tracking-[0.2em] font-light" data-ro="STRIP MALL PIPERA" data-en="STRIP MALL PIPERA">STRIP MALL PIPERA</p>
+    </div>
+</header>
+
+   <div class="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-xl pt-5 pb-3 border-b border-stone-900/60">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col gap-3">
+        
+        <!-- CORECTAT: Am lăsat justify-start peste tot ca să poți da scroll prin TOATE categoriile pe desktop -->
+        <div id="categorii-nav-container" class="flex gap-3 overflow-x-auto pb-2 justify-start snap-x whitespace-nowrap scroll-smooth scrollbar-luxury">
+        </div>
+        
+        <!-- Textul cu instrucțiuni (doar pentru mobil) -->
+        <div class="flex justify-center items-center gap-2 md:hidden opacity-40">
+            <span class="text-[11px] text-amber-400">‹</span>
+            <p class="text-[10px] uppercase tracking-[0.25em] text-stone-200 font-light">Swipe | Glisează</p>
+            <span class="text-[11px] text-amber-400">›</span>
+        </div>
+
+    </div>
+</div>
+
+<!-- STILUL CSS PENTRU BARA LUXURY DE DESKTOP -->
+<style>
+    /* Pe mobil (implicit) ascundem complet scrollbar-ul */
+    .scrollbar-luxury::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-luxury {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* Pe desktop (de la ecran de tabletă/laptop în sus) activăm bara fină */
+    @media (min-width: 768px) {
+        .scrollbar-luxury::-webkit-scrollbar {
+            display: block;
+            height: 3px; /* O facem ultra-subțire și discretă */
+        }
+        /* Fundalul șinei pe care alunecă bara */
+        .scrollbar-luxury::-webkit-scrollbar-track {
+            background: rgba(41, 37, 36, 0.3); /* Un stone-800 foarte transparent */
+            border-radius: 10px;
+        }
+        /* Partea mobilă (care alunecă) - o facem auriu fin */
+        .scrollbar-luxury::-webkit-scrollbar-thumb {
+            background: rgba(251, 191, 36, 0.4); /* Amber-400 cu opacitate, stil discret */
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        /* Când utilizatorul pune mouse-ul pe ea, se aprinde puțin mai tare */
+        .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
+            background: rgba(251, 191, 36, 0.8);
+        }
+        /* Reactivăm scrollbar-ul standard pentru Firefox pe desktop */
+        .scrollbar-luxury {
+            -ms-overflow-style: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(251, 191, 36, 0.4) rgba(41, 37, 36, 0.3);
+        }
+    }
+</style>
+
+    <main class="max-w-5xl mx-auto px-6 mt-12">
+        <div id="loading" class="text-center py-24 text-stone-500 text-xs uppercase tracking-widest font-light" data-ro="Experiența culinară se încarcă..." data-en="The culinary experience is loading...">
+            Experiența culinară se încarcă...
+        </div>
+
+        <div id="meniu-container" class="space-y-24">
+        </div>
+    </main>
+
+    <script>
+        // CONFIGURARE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtKQbxvo-atNoeTf2x5Je-zCKjy-hTB_I",
+            authDomain: "pizza-bonita.firebaseapp.com",
+            projectId: "pizza-bonita",
+            storageBucket: "pizza-bonita.firebasestorage.app",
+            messagingSenderId: "110222387691",
+            appId: "1:110222387691:web:71dd501cb44d56b8a011ae"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let categoriiGlobale = [];
+        let setariOferta = null;
+        let limbaCurenta = 'ro';
+
+        const dictionarCategorii = {
+    // CATEGORII PRINCIPALE & NAVIGARE
+    "pizza": "Pizza",
+    "pizza clasica": "Classic Pizza",
+    "pizza speciala": "Special Pizza",
+    "paste": "Pasta",
+    "bauturi": "Drinks",
+    "desert": "Dessert",
+    "salate": "Salads",
+    "ciorbe": "Soups",
+    "specific libanez": "Lebanese Specialty",
+    "pizza clasice": "Classic Pizzas",
+    "pizza speciale": "Special Pizzas",
+    "con pesce": "With Fish",
+    "bianche": "White Pizzas",
+    "supe / ciorbe": "Soups",
+    "gustări reci": "Cold Appetizers",
+    "gustări calde": "Hot Appetizers",
+    "fel principal": "Main Course",
+    "grătar": "Grill",
+    "din mare": "From the Sea",
+    "garnituri": "Side Dishes",
+    "pâine": "Bread",
+    "sosuri": "Sauces",
+    "narghilea": "Hookah",
+    "espresso": "Espresso",
+    "classic hot": "Classic Hot Drinks",
+    "flavoured coffee": "Flavoured Coffee",
+    "alcoholic coffee": "Alcoholic Coffee",
+    "frappe": "Frappe",
+    "fresh fruit lemonade": "Fresh Fruit Lemonade",
+    "fresh": "Fresh Juice",
+    "ceai": "Tea",
+    "ciocolată caldă": "Hot Chocolate",
+    "vinuri": "Wines",
+    "liqueur": "Liqueur",
+    "cognac": "Cognac",
+    "spirits": "Spirits",
+    "digestifs": "Digestifs",
+    "long drinks": "Long Drinks",
+    "cocktails": "Cocktails",
+    "beer": "Beer",
+    "soft drinks": "Soft Drinks",
+
+    // PIZZA - TITLURI
+    "pizza margherita": "Pizza Margherita",
+    "pizza bufala margherita": "Pizza Bufala Margherita",
+    "pizza prosciutto": "Pizza Prosciutto",
+    "pizza prosciutto funghi": "Pizza Prosciutto Funghi",
+    "pizza capriciosa": "Pizza Capriciosa",
+    "pizza diavola": "Pizza Diavola",
+    "pizza quattro stagioni": "Pizza Quattro Stagioni",
+    "pizza pollo": "Pizza Pollo",
+    "pizza calzone": "Pizza Calzone",
+    "pizza pepperoni": "Pizza Pepperoni",
+    "pizza prosciutto crudo": "Pizza Prosciutto Crudo",
+    "pizza vegetariana": "Pizza Vegetariana",
+    "pizza țărănească": "Peasant Pizza",
+    "pizza canibale": "Pizza Canibale",
+    "pizza rustică": "Rustic Pizza",
+    "pizza mexicană": "Mexican Pizza",
+    "pizza safari": "Pizza Safari",
+    "pizza bomba": "Pizza Bomba",
+    "pizza bonita": "Pizza Bonita",
+    "pizza crudo rucola": "Pizza Crudo Rucola",
+    "pizza chicken bbq": "Pizza Chicken BBQ",
+    "pizza pepe nero": "Pizza Pepe Nero",
+    "pizza quattro pesce": "Pizza Quattro Pesce",
+    "pizza tonno e cipolla": "Pizza Tonno e Cipolla",
+    "pizza salmone": "Pizza Salmone",
+    "pizza carbonarra": "Pizza Carbonara",
+    "pizza quattro formaggi": "Pizza Quattro Formaggi",
+    "pizza misto funghi": "Pizza Misto Funghi",
+    "pizza artigianale": "Artisan Pizza",
+
+    // INGREDIENTE & DESCRIERI PIZZA
+    "sos de roșii, mozzarella": "tomato sauce, mozzarella",
+    "sos de roșii, mozzarella di bufala, busuioc": "tomato sauce, mozzarella di bufala, basil",
+    "sos de roșii, mozzarella, juncă": "tomato sauce, mozzarella, ham",
+    "sos de roșii, mozzarella, juncă, ciuperci": "tomato sauce, mozzarella, ham, mushrooms",
+    "sos de roșii, mozzarella, juncă, ciuperci, anghinare": "tomato sauce, mozzarella, ham, mushrooms, artichoke",
+    "sos de roșii, mozzarella, chorizo, ceapă roșie": "tomato sauce, mozzarella, chorizo, red onion",
+    "sos de roșii, mozzarella, juncă, ciuperci, salam, măsline": "tomato sauce, mozzarella, ham, mushrooms, salami, olives",
+    "sos de roșii, mozzarella, pui, ciuperci": "tomato sauce, mozzarella, chicken, mushrooms",
+    "sos de roșii, mozzarella, chorizo, ardei gras, ardei iute, ceapă roșie": "tomato sauce, mozzarella, chorizo, bell pepper, hot pepper, red onion",
+    "sos de roșii, mozzarella, prosciutto crudo": "tomato sauce, mozzarella, prosciutto crudo",
+    "sos de roșii, mozzarella, ciuperci, măsline, ardei gras, porumb, ceapă roșie": "tomato sauce, mozzarella, mushrooms, olives, bell pepper, corn, red onion",
+    "sos de roșii, mozzarella, bacon, ciuperci, ceapă roșie, ardei gras": "tomato sauce, mozzarella, bacon, mushrooms, red onion, bell pepper",
+    "sos de roșii, mozzarella, juncă, bacon, salam, cârnați semiafumați": "tomato sauce, mozzarella, ham, bacon, salami, semi-smoked sausages",
+    "sos de roșii, mozzarella, juncă, salam, ciuperci, ou": "tomato sauce, mozzarella, ham, salami, mushrooms, egg",
+    "sos de roșii, mozzarella, cârnați semiafumați, fasole, jalapenos": "tomato sauce, mozzarella, semi-smoked sausages, beans, jalapenos",
+    "sos de roșii, mozzarella, pui, ardei gras, măsline, smântână": "tomato sauce, mozzarella, chicken, bell pepper, olives, sour cream",
+    "sos de roșii, mozzarella, juncă, salam, ciuperci, ardei gras, cârnați, roșii": "tomato sauce, mozzarella, ham, salami, mushrooms, bell pepper, sausages, tomatoes",
+    "sos de roșii, mozzarella, suncă, salam, ciuperci, ardei gras, roșii, porumb, ceapă": "tomato sauce, mozzarella, ham, salami, mushrooms, bell pepper, tomatoes, corn, onion",
+    "sos de roșii, mozzarella di bufala, prosciutto crudo, rucola, parmezan": "tomato sauce, mozzarella di bufala, prosciutto crudo, rucola, parmesan",
+    "mozzarella, pui, ciuperci, ceapă caramelizată, sos bbq": "mozzarella, chicken, mushrooms, caramelized onion, bbq sauce",
+    "cremă de trufe, mozzarella di bufala, porcini, speck, piper": "truffle cream, mozzarella di bufala, porcini, speck, pepper",
+    "sos de roșii, mozzarella, anchois, somon afumat, creveți, ton": "tomato sauce, mozzarella, anchovies, smoked salmon, shrimps, tuna",
+    "sos de roșii, mozzarella, ton, ceapă roșie": "tomato sauce, mozzarella, tuna, red onion",
+    "mozzarella, somon afumat, roșii cherry, lămâie": "mozzarella, smoked salmon, cherry tomatoes, lemon",
+    "mozzarella, bacon, parmezan, gran cuccina, ou, piper": "mozzarella, bacon, parmesan, gran cuccina, egg, pepper",
+    "mozzarella, gorgonzola, emmentaler, parmezan": "mozzarella, gorgonzola, emmentaler, parmesan",
+    "cremă de trufe, mozzarella, ciuperci, ciuperci sote": "truffle cream, mozzarella, mushrooms, sauteed mushrooms",
+    "mozzarella, ciuperci, gorgonzola, rucola, roșii cherry, speck, parmezan": "mozzarella, mushrooms, gorgonzola, rucola, cherry tomatoes, speck, parmesan",
+
+    // SUPE / CIORBE
+    "supă cremă de linte": "Lentil Cream Soup",
+    "linte roșie, crutoane, lămâie - 350ml": "red lentils, croutons, lemon - 350ML",
+    "ciorbă de legume": "Vegetable Soup",
+    "cartofi, morcovi, țelină, roșii, borș - 350ml": "potatoes, carrots, celery, tomatoes, borscht - 350ML",
+    "ciorbă de pui": "Chicken Soup",
+    "piept de pui, morcov, țelină, roșii, cartofi, borș - 350ml": "chicken breast, carrot, celery, tomatoes, potatoes, borscht - 350ML",
+    "ciorbă de văcuță": "Beef Soup",
+    "pulpă văcuță, morcov, țelină, roșii, cartofi, borș - 350ml": "beef chunk, carrot, celery, tomatoes, potatoes, borscht - 350ML",
+
+    // GUSTĂRI RECI
+    "hummus clasic": "Classic Hummus",
+    "năut, tahina, lămâie, ulei de măsline, condimente - 210g": "chickpeas, tahini, lemon, olive oil, spices - 210G",
+    "hummus trufe": "Truffle Hummus",
+    "năut, tahina, lămâie, ulei de măsline, trufe, condimente - 230g": "chickpeas, tahini, lemon, olive oil, truffles, spices - 230G",
+    "hummus avocado": "Avocado Hummus",
+    "năut, tahina, lămâie, ulei de măsline, avocado, condimente - 230g": "chickpeas, tahini, lemon, olive oil, avocado, spices - 230G",
+    "hummus creveți": "Shrimp Hummus",
+    "năut, tahina, lămâie, ulei de măsline, creveți, condimente - 230g": "chickpeas, tahini, lemon, olive oil, shrimps, spices - 230G",
+    "hummus beiruti": "Hummus Beiruti",
+    "năut, tahina, condimente, usturoi, pătrunjel, pastă de ardei iute, ceapă lămâie, ulei de măsline, roșii - 220g": "chickpeas, tahini, spices, garlic, parsley, hot pepper paste, onion, lemon, olive oil, tomatoes - 220G",
+    "hummus carne și snubar": "Hummus with Meat and Pine Nuts",
+    "năut, tahina, lămâie, ulei de măsline, condimente, carne de vită, muguri de pin - 280g": "chickpeas, tahini, lemon, olive oil, spices, beef, pine nuts - 280G",
+    "hummus snubar": "Hummus with Pine Nuts",
+    "năut, tahina, lămâie, ulei de măsline, condimente, muguri de pin - 230g": "chickpeas, tahini, lemon, olive oil, spices, pine nuts - 230G",
+    "moutabal": "Moutabal",
+    "vinete, tahina, boabe de rodie, usturoi, iaurt, ulei de măsline, condimente - 210g": "eggplants, tahini, pomegranate seeds, garlic, yogurt, olive oil, spices - 210G",
+    "babaganoush": "Babaganoush",
+    "vinete, ardei gras, sos de rodie, ceapă, pătrunjel, roșii - 210g": "eggplants, bell pepper, pomegranate sauce, onion, parsley, tomatoes - 210G",
+    "shanklish": "Shanklish",
+    "brânză de capră, ceapă, roșii, cimbru, pătrunjel, ulei di măsline - 250g": "goat cheese, onion, tomatoes, thyme, parsley, olive oil - 250G",
+    "makdous": "Makdous",
+    "vinete umplute cu nucă, pastă de ardei iute, lămâie, ulei de măsline - 150g": "eggplants stuffed with walnuts, hot pepper paste, lemon, olive oil - 150G",
+    "labneh": "Labneh",
+    "cremă de iaurt, ulei de măsline - 230g": "yogurt cream, olive oil - 230G",
+    "labneh zaatar": "Labneh Zaatar",
+    "cremă de iaurt, ulei de măsline, cimbru - 230g": "yogurt cream, olive oil, thyme - 230G",
+    "labneh mentă & usturoi": "Labneh Mint & Garlic",
+    "cremă de iaurt, mentă, usturoi, ulei de măsline - 230g": "yogurt cream, mint, garlic, olive oil - 230G",
+    "platou mixt": "Mixed Platter",
+    "hummus, babaganoush, moutabal, labneh - 500g": "hummus, babaganoush, moutabal, labneh - 500G",
+    "sărmăluțe în foi de viță": "Stuffed Vine Leaves",
+    "foi de viță, orez, roșii, pătrunjel, orez, ceapă, condimente, sos de rodie, ulei de măsline - 300g": "vine leaves, rice, tomatoes, parsley, onion, spices, pomegranate sauce, olive oil - 300G",
+
+    // GUSTĂRI CALDE
+    "falafel": "Falafel",
+    "chiftele de năut, susan, sos tahina, castraveți murați, roșii - 5 buc": "chickpea patties, sesame, tahini sauce, pickled cucumbers, tomatoes - 5 PCS",
+    "halloumi": "Halloumi",
+    "brânză halloumi la grătar, salată, roșii - 250g": "grilled halloumi cheese, salad, tomatoes - 250G",
+    "sambusek brânză": "Cheese Sambusek",
+    "aluat, brânză telemea de vacă, condimente - 4 buc": "dough, cow milk feta cheese, spices - 4 PCS",
+    "sambusek carne": "Meat Sambusek",
+    "aluat, carne tocată vită-oaie, sos de rodie, condimente - 4 buc": "dough, minced beef-mutton meat, pomegranate sauce, spices - 4 PCS",
+    "sambusek mixt": "Mixed Sambusek",
+    "2 buc sambusek brânză, 2 buc sambusek carne - 4 buc": "2 pcs cheese sambusek, 2 pcs meat sambusek - 4 PCS",
+    "arayes pui și mozzarella": "Chicken & Mozzarella Arayes",
+    "lipie rece, piept de pui, mozzarella, condimente - 300g": "pita bread, chicken breast, mozzarella, spices - 300G",
+    "arayes kafta": "Kafta Arayes",
+    "lipie rece, carne tocată vită-oaie, ceapă, pătrunjel, condimente - 300g": "pita bread, minced beef-mutton meat, onion, parsley, spices - 300G",
+    "ficăței de pui în sos de lămâie": "Chicken Livers in Lemon Sauce",
+    "ficăței de pui, condimente, zeamă de lămâie - 322g (220/100)": "chicken livers, spices, lemon juice - 322G (220/100)",
+    "ficăței de pui în sos de rodie": "Chicken Livers in Pomegranate Sauce",
+    "ficăței de pui, condimente, sos de rodie - 320g (220/100)": "chicken livers, spices, pomegranate sauce - 320G (220/100)",
+    "sharhat de pui": "Chicken Sharhat",
+    "piept de pui, mentă, lămâie, usturoi, condimente - 300g (180/120)": "chicken breast, mint, lemon, garlic, spices - 300G (180/120)",
+    "sharhat de vită": "Beef Sharhat",
+    "mușchi de vită, mentă, lămâie, usturoi, condimente - 300g (180/120)": "beef tenderloin, mint, lemon, garlic, spices - 300G (180/120)",
+    "crochete de pui": "Chicken Croquettes",
+    "piept de pui, ou, făină, pesmet, condimente, lămâie, usturoi - 250g (180/70)": "chicken breast, egg, flour, breadcrumbs, spices, lemon, garlic - 250G (180/70)",
+    "piept de pui el sheikh": "Chicken Breast El Sheikh",
+    "piept de pui, ciuperci, smântână, vin, gran cuccina, usturoi - 350g (180/170)": "chicken breast, mushrooms, sour cream, wine, gran cuccina, garlic - 350G (180/170)",
+    "ras asfour de pui": "Chicken Ras Asfour",
+    "piept de pui, ceapă, usturoi, sos de rodie, condimente - 320g (180/140)": "chicken breast, onion, garlic, pomegranate sauce, spices - 320G (180/140)",
+    "ras asfour de vită": "Beef Ras Asfour",
+    "mușchi de vită, ceapă, sos de rodie, condimente - 320g (180/140)": "beef tenderloin, onion, pomegranate sauce, spices - 320G (180/140)",
+    "ras asfour berbecuț": "Lamb Ras Asfour",
+    "mușchi de berbecuț, ceapă, usturoi, sos de rodie, condimente - 320g (180/140)": "lamb tenderloin, onion, garlic, pomegranate sauce, spices - 320G (180/140)",
+    "lahmajun": "Lahmajun",
+    "carne tocată vită-oaie, ardei gras, condimente, lipie pe vatră - 450g (200/250)": "minced beef-mutton meat, bell pepper, spices, hearth baked pita - 450G (200/250)",
+    "sujuk": "Sujuk",
+    "cârnați de oaie, roșii, usturoi, condimente, ardei - 250g": "mutton sausages, tomatoes, garlic, spices, pepper - 250G",
+    "makanek": "Makanek",
+    "cârnați de oaie, lămâie, usturoi, condimente - 200g": "mutton sausages, lemon, garlic, spices - 200G",
+
+    // FEL PRINCIPAL
+    "shawarma pui": "Chicken Shawarma",
+    "piept de pui, maioneză cu usturoi, salată crudități, cartofi proaspeți prăjiți, condimente - 480g (180/300)": "chicken breast, garlic mayonnaise, raw salad, fresh french fries, spices - 480G (180/300)",
+    "shawarma de vită": "Beef Shawarma",
+    "mușchi de vițel, usturoi, sos tahina, bioaz, ceapă, cartofi prăjiți, condimente, castraveți murați - 430g (180/250)": "veal tenderloin, garlic, tahini sauce, biwaz, onion, french fries, spices, pickled cucumbers - 430G (180/250)",
+    "shawarma berbecuț": "Lamb Shawarma",
+    "mușchi de berbecuț, cartofi prăjiți, bioaz, maioneză cu usturoi, condimente - 430g (180/250)": "lamb tenderloin, french fries, biwaz, garlic mayonnaise, spices - 430G (180/250)",
+    "aripioare pui în sos picant": "Chicken Wings in Hot Sauce",
+    "aripioare de pui, sos picant, usturoi, condimente - 350g (250/100)": "chicken wings, hot sauce, garlic, spices - 350G (250/100)",
+
+    // GRĂTAR
+    "aripioare de pui la grătar": "Grilled Chicken Wings",
+    "aripi de pui, coleslaw, maioneză cu usturoi, cartofi prăjiți - 470g (200/270)": "chicken wings, coleslaw, garlic mayonnaise, french fries - 470G (200/270)",
+    "piept de pui la grătar": "Grilled Chicken Breast",
+    "piept de pui la grătar, coleslaw, maioneză, cartofi prăjiți - 450g (180/270)": "grilled chicken breast, coleslaw, mayonnaise, french fries - 450G (180/270)",
+    "shish taouk": "Shish Taouk",
+    "piept de pui, salată coleslaw, maioneză cu usturoi, cartofi prăjiți - 450g (180/270)": "chicken breast, coleslaw salad, garlic mayonnaise, french fries - 450G (180/270)",
+    "frigărui de vită": "Beef Skewers",
+    "mușchi de vită, salată bioaz, cartofi prăjiți, legume la grătar - 450g (180/270)": "beef tenderloin, biwaz salad, french fries, grilled vegetables - 450G (180/270)",
+    "frigărui de berbecuț": "Lamb Skewers",
+    "mușchi berbecuț, salată bioaz, cartofi prăjiți, legume la grătar - 450g (180/270)": "lamb tenderloin, biwaz salad, french fries, grilled vegetables - 450G (180/270)",
+    "kastaleta nz": "Kastaleta NZ",
+    "cotlet de miel nz, salată bioaz, cartofi prăjiți, legume la grătar - 550g (300/250)": "NZ lamb chops, biwaz salad, french fries, grilled vegetables - 550G (300/250)",
+    "kafta": "Kafta",
+    "carne tocată vită-oaie, pătrunjel, ceapă, salată bioaz, cartofi prăjiți, legume la grătar - 430g (180/250)": "minced beef-mutton meat, parsley, onion, biwaz salad, french fries, grilled vegetables - 430G (180/250)",
+    "yoghurt kebab": "Yogurt Kebab",
+    "carne tocată vită-oaie, pătrunjel, ceapă, salată bioaz, iaurt, condimente, mentă, usturoi, legume la grătar - 450g (180/270)": "minced beef-mutton meat, parsley, onion, biwaz salad, yogurt, spices, mint, garlic, grilled vegetables - 450G (180/270)",
+    "kebab has": "Kebab Has",
+    "has - carne tocată vită-oaie, pătrunjel, ceapă, salată bioaz, sos de roșii, condimente, pastă iute, usturoi, legume la grătar - 420g (180/240)": "Has - minced beef-mutton meat, parsley, onion, biwaz salad, tomato sauce, spices, hot paste, garlic, grilled vegetables - 420G (180/240)",
+    "adana kebab ( picant )": "Adana Kebab (Spicy)",
+    "carne tocată vită-oaie, pătrunjel, usturoi, ceapă, pastă iute, condimente, salată bioaz, cartofi prăjiți - 430g (180/250)": "minced beef-mutton meat, parsley, garlic, onion, hot paste, spices, biwaz salad, french fries - 430G (180/250)",
+    "kebab baiti": "Kebab Baiti",
+    "carne tocată vită-oaie, pătrunjel, mozzarella, ceapă, condimente, salată bioaz, lipie pe vatră, legume la grătar - 450g (180/270)": "minced beef-mutton meat, parsley, mozzarella, onion, spices, biwaz salad, hearth baked pita, grilled vegetables - 450G (180/270)",
+    "mix grill": "Mix Grill",
+    "frigărui pui și vită, kafta, salată bioaz, cartofi prăjiți, legume la grătar - 510g (240/270)": "chicken and beef skewers, kafta, biwaz salad, french fries, grilled vegetables - 510G (240/270)",
+
+    // DIN MARE
+    "inele de calamar": "Calamari Rings",
+    "inele de calamar, lămâie - 8 buc": "calamari rings, lemon - 8 PCS",
+    "creveți el sheikh": "Shrimps El Sheikh",
+    "creveți, usturoi, lămâie, condimente - 250g": "shrimps, garlic, lemon, spices - 250G",
+    "somon la grătar": "Grilled Salmon",
+    "medalion de somon, lămâie, legume la grătar - 300g (180/120)": "salmon medallion, lemon, grilled vegetables - 300G (180/120)",
+    "doradă la grătar": "Grilled Sea Bream",
+    "doradă, lămâie, legume la grătar - buc (250/120)": "sea bream, lemon, grilled vegetables - PCS (250/120)",
+
+    // GARNITURI
+    "orez": "Rice",
+    "orez galben": "Yellow Rice",
+    "orez basmatic, șofran - 250g": "basmati rice, saffron - 250G",
+    "orez el sheikh": "Rice El Sheikh",
+    "orez basmatic, carne de vită, stafide, muguri de pin - 300g": "basmati rice, beef, raisins, pine nuts - 300G",
+    "ciuperci sote": "Sauteed Mushrooms",
+    "ciuperci, pătrunjel, usturoi, unt - 250g": "mushrooms, parsley, garlic, butter - 250G",
+    "legume la grătar": "Grilled Vegetables",
+    "vinete, dovlecel, roșii, ciuperci, ardei - 300g": "eggplants, zucchini, tomatoes, mushrooms, peppers - 300G",
+    "cartofi cu parmezan și usturoi": "French Fries with Parmesan and Garlic",
+    "cartofi prăjiți": "French Fries",
+    "cartofi mentă & usturoi": "French Fries with Mint & Garlic",
+    "cartofi, mentă, usturoi, lămâie - 250g": "potatoes, mint, garlic, lemon - 250G",
+    "cartofi iuți": "Spicy French Fries",
+    "cartofi, coriandru, pastă ardei iute, lămâie, usturoi - 270g": "potatoes, coriander, hot pepper paste, lemon, garlic - 270G",
+
+    // SALATE
+    "tabbouleh": "Tabbouleh",
+    "pătrunjel, roșii, ceapă, bulgur, ceapă, lămâie, ulei de măsline, condimente - 250g": "parsley, tomatoes, onion, bulgur, lemon, olive oil, spices - 250G",
+    "fattoush": "Fattoush",
+    "salată, roșii, castraveți, sumak, sos de rodii, lămâie, ulei de măsline, crutoane, ardei gras - 360g": "salad, tomatoes, cucumbers, sumac, pomegranate sauce, lemon, olive oil, croutons, bell pepper - 360G",
+    "salată zeiton": "Zeiton Salad",
+    "măsline verzi, nucă, pătrunjel, roșii, ceapă, sos de rodii, morcovi, mentă, ulei de măsline - 250g": "green olives, walnut, parsley, tomatoes, onion, pomegranate sauce, carrots, mint, olive oil - 250G",
+    "salată asortată": "Assorted Salad",
+    "salată verde, roșii, castraveți, ardei, ceapă, ulei de măsline - 250g": "lettuce, tomatoes, cucumbers, pepper, onion, olive oil - 250G",
+    "salată de varză": "Cabbage Salad",
+    "salată verde, roșii, castraveți, ardei, ceapă, ulei de măsline - 200g": "lettuce, tomatoes, cucumbers, pepper, onion, olive oil - 200G",
+    "salată verde": "Green Salad",
+    "salată verde, sare de lămâie, ulei de măsline - 200g": "lettuce, lemon salt, olive oil - 200G",
+    "salată grecească": "Greek Salad",
+    "salată verde, roșii, castraveți, brânză feta, ceapă, lămâie, măsline, ulei de măsline - 300g": "lettuce, tomatoes, cucumbers, feta cheese, onion, lemon, olives, olive oil - 300G",
+    "salată cu pui": "Chicken Salad",
+    "roșii, castraveți, ceapă, crutoane, fâșii de pui - 400g": "tomatoes, cucumbers, onion, croutons, chicken strips - 400G",
+    "salată cu creveți": "Shrimp Salad",
+    "salată, roșii, castraveți, ceapă, creveți - 300g": "salad, tomatoes, cucumbers, onion, shrimps - 300G",
+    "salată falafel": "Falafel Salad",
+    "salată, roșii, castraveți, ceapă, falafel (4buc), ceapă, morcov - 400g": "salad, tomatoes, cucumbers, onion, falafel (4pcs), carrot - 400G",
+    "salată coleslaw": "Coleslaw Salad",
+    "morcov, maioneză, varză albă - 220g": "carrot, mayonnaise, white cabbage - 220G",
+    "salata de castraveti murati": "Pickled Cucumbers Salad",
+
+    // PÂINE & SOSURI
+    "lipie libaneză pe vatră": "Hearth Baked Lebanese Pita",
+    "tarator ( susan )": "Tarator (Sesame Sauce)",
+    "tahina, usturoi, lămâie - 50g": "tahini, garlic, lemon - 50G",
+    "sos iute": "Hot Sauce",
+    "sos roșii, pastă de ardei iute - 50g": "tomato sauce, hot pepper paste - 50G",
+    "maioneză cu usturoi": "Garlic Mayonnaise",
+
+    // DESERT
+    "baclava cu fistic": "Pistachio Baklava",
+    "baclava cu fistic - 4 buc": "pistachio baklava - 4 PCS",
+    "kasta": "Kasta",
+    "caimac de lapte, banane, fistic, miere - 300g": "milk clotted cream, bananas, pistachio, honey - 300G",
+    "lava cake": "Lava Cake",
+    "lava cake, înghețată - 200g": "lava cake, ice cream - 200G",
+    "tiramisu home made": "Homemade Tiramisu",
+    "cremă de mascarpone, pișcoturi, cafea, pudră cacao - 220g": "mascarpone cream, ladyfingers, coffee, cocoa powder - 220G",
+    "înghețată asortată": "Assorted Ice Cream",
+    "vanilie, caramel, ciocolată - 220g": "vanilla, caramel, chocolate - 220G",
+
+    // NARGHILEA
+    "narghilea diverse sortimente": "Hookah Various Flavoured Shisha",
+
+    // BĂUTURI & CAFEA (BAZĂ / INGREDIENTE)
+    "espresso short": "Short Espresso",
+    "espresso long": "Long Espresso",
+    "espresso double": "Double Espresso",
+    "espresso macchiato": "Espresso Macchiato",
+    "espresso, spumă de lapte - 90ml": "espresso, milk foam - 90ML",
+    "americano": "Americano",
+    "italian cappuccino": "Italian Cappuccino",
+    "espresso, lapte, spumă de lapte - 150ml": "espresso, milk, milk foam - 150ML",
+    "viennese cappuccino": "Viennese Cappuccino",
+    "espresso, lapte, frișcă - 150ml": "espresso, milk, whipped cream - 150ML",
+    "caffe latte": "Caffe Latte",
+    "espresso, lapte, spumă de lapte - 200ml": "espresso, milk, milk foam - 200ML",
+    "lapte cald": "Hot Milk",
+    "mocha": "Mocha",
+    "espresso, cremă de lapte, topping ciocolată - 150ml": "espresso, milk cream, chocolate topping - 150ML",
+    "affogato": "Affogato",
+    "espresso, înghețată vanilie - 100ml": "espresso, vanilla ice cream - 100ML",
+    "vanilla latte": "Vanilla Latte",
+    "espresso, lapte, sirop vanilie - 210ml": "espresso, milk, vanilla syrup - 210ML",
+    "caramel latte": "Caramel Latte",
+    "espresso, lapte, sirop caramel - 210ml": "espresso, milk, caramel syrup - 210ML",
+    "italian coffee": "Italian Coffee",
+    "espresso, amaretto, frișcă - 200ml": "espresso, amaretto, whipped cream - 200ML",
+    "french coffee": "French Coffee",
+    "espresso, brandy, frișcă - 150ml": "espresso, brandy, whipped cream - 150ML",
+    "irish coffee": "Irish Coffee",
+    "espresso, whisky, frișcă - 200ml": "espresso, whisky, whipped cream - 200ML",
+    "bailey's latte": "Bailey's Latte",
+    "espresso, lapte, bailey's - 220ml": "espresso, milk, bailey's - 220ML",
+
+    // FRAPPE
+    "clasic": "Classic",
+    "ness, lapte, frișcă - 400ml": "instant coffee, milk, whipped cream - 400ML",
+    "chocolate": "Chocolate",
+    "ness, lapte, frișcă, înghețată și sirop ciocolată - 400ml": "instant coffee, milk, whipped cream, ice cream and chocolate syrup - 400ML",
+    "vanilla": "Vanilla",
+    "ness, lapte, frișcă, înghețată vanilie - 400ml": "instant coffee, milk, whipped cream, vanilla ice cream - 400ML",
+    "caramel": "Caramel",
+    "ness, lapte, frișcă, înghețată, caramel - 400ml": "instant coffee, milk, whipped cream, ice cream, caramel - 400ML",
+    "oreo": "Oreo",
+    "ness, lapte, biscuiți oreo, frișcă, înghețată vanilie - 400ml": "instant coffee, milk, oreo biscuits, whipped cream, vanilla ice cream - 400ML",
+    "snickers": "Snickers",
+    "ness, lapte, snickers, frișcă, înghețată ciocolată, sirop caramel - 400ml": "instant coffee, milk, snickers, whipped cream, chocolate ice cream, caramel syrup - 400ML",
+    "m&m": "M&M",
+    "ness, lapte, m&m, frișcă, înghețată și sirop de ciocolată - 400ml": "instant coffee, milk, m&m, whipped cream, ice cream and chocolate syrup - 400ML",
+
+    // LIMONADE & JUICE
+    "clasică": "Classic",
+    "pepene galben": "Melon",
+    "fresh lămâie, pepene galben - 500ml": "fresh lemon, melon - 500ML",
+    "mentă": "Mint",
+    "fresh lămâie, mentă fresh - 500ml": "fresh lemon, fresh mint - 500ML",
+    "căpșuni": "Strawberry",
+    "fresh lămâie, căpșuni - 500ml": "fresh lemon, strawberries - 500ML",
+    "afine": "Blueberry",
+    "fresh lămâie, afine - 500ml": "fresh lemon, blueberries - 500ML",
+    "zmeură": "Raspberry",
+    "fresh lămâie, zmeură - 500ml": "fresh lemon, raspberries - 500ML",
+    "castraveți": "Cucumber",
+    "fresh lămâie, castraveți - 500ml": "fresh lemon, cucumber - 500ML",
+    "citronadă": "Citronade",
+    "apă plată sau minerală, fresh lămâie, fresh portocale - 500ml": "still or sparkling water, fresh lemon, fresh orange - 500ML",
+    "portocale": "Orange",
+    "grapefruit": "Grapefruit",
+    "mix": "Mix Fresh Juice",
+    "diverse sortimente": "Assorted Flavours",
+
+    // ALCOOL, VINURI, SPIRITS
+    "vin miniatură": "Miniature Wine",
+    "alb, roze, roșu - 200ml": "white, rose, red - 200ML",
+    "prosecco minitură": "Miniature Prosecco",
+    "bailey's": "Bailey's",
+    "amaretto disaronno": "Amaretto Disaronno",
+    "martell vs": "Martell VS",
+    "metaxa 5": "Metaxa 5*",
+    "metaxa 7": "Metaxa 7*",
+    "jack daniels": "Jack Daniels",
+    "gentleman's jack": "Gentleman's Jack",
+    "jamesons": "Jameson",
+    "chivas 12": "Chivas Regal 12YO",
+    "glenmorangie": "Glenmorangie",
+    "glenfiddich 15yo": "Glenfiddich 15YO",
+    "ciroc": "Cîroc Vodka",
+    "beluga": "Beluga Vodka",
+    "bombay sapphire": "Bombay Sapphire Gin",
+    "havana 7yo": "Havana Club 7YO",
+    "captain morgan": "Captain Morgan Rum",
+    "campari": "Campari",
+    "martini rosso": "Martini Rosso",
+    "martini bianco": "Martini Bianco",
+    "jaggermeister": "Jägermeister",
+    "tequila": "Tequila Gold/Silver",
+
+    // LONG DRINKS & COCKTAILS
+    "cuba libre": "Cuba Libre",
+    "rom, pepsi, lime - 300ml": "rum, pepsi, lime - 300ML",
+    "screw driver": "Screwdriver",
+    "vodcă, suc portocale - 250ml": "vodka, orange juice - 250ML",
+    "vodka energy": "Vodka Energy",
+    "vodcă, energizant - 300ml": "vodka, energy drink - 300ML",
+    "whisky energy": "Whisky Energy",
+    "whisky, energizant - 300ml": "whisky, energy drink - 300ML",
+    "gin tonic": "Gin Tonic",
+    "gin, apă tonică - 500ml": "gin, tonic water - 500ML",
+    "campari orange": "Campari Orange",
+    "campari, suc portocale - 500ml": "campari, orange juice - 500ML",
+    "mojito": "Mojito",
+    "rom, mentă, zahăr brun, lime, apă minerală, gheață - 350ml": "rum, mint, brown sugar, lime, sparkling water, ice - 350ML",
+    "pina colada": "Pina Colada",
+    "suc ananas, sirop cocos, frișcă lichidă, rom alb - 350ml": "pineapple juice, coconut syrup, liquid cream, white rum - 350ML",
+    "long island": "Long Island Iced Tea",
+    "gin, vodcă, rom alb, tequila, triplu sec, pepsi, lime - 350ml": "gin, vodka, white rum, tequila, triple sec, pepsi, lime - 350ML",
+    "tequila sunrise": "Tequila Sunrise",
+    "tequila, suc portocale, grenadine - 350ml": "tequila, orange juice, grenadine - 350ML",
+    "aperol spritz": "Aperol Spritz",
+    "aperol, prosecco, apă minerală - 300ml": "aperol, prosecco, sparkling water - 300ML",
+    "hugo": "Hugo",
+    "prosecco, sirop soc, apă minerală, mentă - 300ml": "prosecco, elderflower syrup, sparkling water, mint - 300ML",
+    "green apple": "Green Apple (Non-Alcoholic)",
+    "suc mere verzi, lime, fulgi de gheață, zahăr brun, măr - 350ml": "green apple juice, lime, crushed ice, brown sugar, apple - 350ML",
+    "wild cherry": "Wild Cherry (Non-Alcoholic)",
+    "suc cireșe, lime, zahăr brun - 250ml": "cherry juice, lime, brown sugar - 250ML",
+    "nada colada": "Nada Colada (Non-Alcoholic)",
+    "suc ananas, sirop cocos, frișcă lichidă - 350ml": "pineapple juice, coconut syrup, liquid cream - 350ML",
+
+    // BERE
+    "ciuc premium": "Ciuc Premium",
+    "heineken": "Heineken",
+    "bavaria": "Bavaria",
+    "nenea iancu blondă": "Nenea Iancu Blonde",
+    "silva dark": "Silva Dark",
+    "paulaner hefe": "Paulaner Hefe-Weißbier",
+    "nefiltrată - 500ml": "unfiltered - 500ML",
+    "nenea iancu albă": "Nenea Iancu White",
+    "augustiner": "Augustiner",
+    "desperados": "Desperados",
+    "strongbow red berries": "Strongbow Red Berries Cider",
+    "paulaner n.a.": "Paulaner Non-Alcoholic",
+    "heineken n.a.": "Heineken Non-Alcoholic",
+
+    // SOFT DRINKS
+    "pepsi": "Pepsi",
+    "pepsi twist": "Pepsi Twist",
+    "pepsi max": "Pepsi Max",
+    "mirinda": "Mirinda",
+    "7up": "7Up",
+    "evervess": "Evervess Tonic",
+    "prigat": "Prigat Juice",
+    "lipton ice tea": "Lipton Ice Tea",
+    "aqua carpatica": "Aqua Carpatica",
+    "plată, minerală - 330ml": "still, sparkling - 330ML",
+    "plată, minerală - 750ml": "still, sparkling - 750ML",
+    "redbull": "Red Bull"
+};
+
+        function traduceNumeCategorie(nume) {
+            if (limbaCurenta === 'ro') return nume;
+            let curat = nume.toLowerCase().trim();
+            return dictionarCategorii[curat] || nume;
+        }
+
+        function comutaLimba() {
+            limbaCurenta = (limbaCurenta === 'ro') ? 'en' : 'ro';
+            document.getElementById('text-limba-buton').innerText = (limbaCurenta === 'ro') ? 'English' : 'Română';
+            
+            document.querySelectorAll('[data-ro]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${limbaCurenta}`);
+            });
+
+            verificaSiAfiseazaOferta();
+            randeazaMeniu();
+        }
+
+        db.collection("setari").doc("oferta").onSnapshot((doc) => {
+            if (doc.exists) {
+                setariOferta = doc.data();
+                verificaSiAfiseazaOferta();
+            }
+        });
+
+        function verificaSiAfiseazaOferta() {
+            const banner = document.getElementById('banner-oferta');
+            const textBanner = document.getElementById('text-oferta');
+
+            if (!setariOferta || !setariOferta.activa) {
+                banner.classList.add('hidden');
+                return;
+            }
+
+            const acum = new Date();
+            const oraCurenta = `${String(acum.getHours()).padStart(2, '0')}:${String(acum.getMinutes()).padStart(2, '0')}`;
+
+            if (oraCurenta >= setariOferta.oraInceput && oraCurenta <= setariOferta.oraSfarsit) {
+                let textInLimba = setariOferta.text;
+                const prefix = limbaCurenta === 'ro' ? 'Exclusiv' : 'Exclusive';
+                const valabil = limbaCurenta === 'ro' ? 'Disponibil între' : 'Available between';
+                
+                textBanner.innerText = `${prefix}: ${textInLimba} — ${valabil} ${setariOferta.oraInceput} - ${setariOferta.oraSfarsit}`;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        // OPTIMIZARE CRUCIALĂ: Încărcăm DOAR colecția categorii (preparatele se află acum în array-ul "preparate" din fiecare categorie)
+        db.collection("categorii").orderBy("ordine", "asc").onSnapshot((snapshotCategorii) => {
+            categoriiGlobale = snapshotCategorii.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            randeazaMeniu();
+        });
+
+      
+        function randeazaMeniu() {
+    const container = document.getElementById('meniu-container');
+    const navContainer = document.getElementById('categorii-nav-container');
+    const loading = document.getElementById('loading');
+    
+    loading.classList.add('hidden');
+    container.innerHTML = "";
+    navContainer.innerHTML = "";
+
+    if (categoriiGlobale.length === 0) {
+        const mesajGol = limbaCurenta === 'ro' ? 'Meniul este indisponibil momentan.' : 'The menu is currently unavailable.';
+        container.innerHTML = `<p class="text-center text-stone-500 font-light text-sm">${mesajGol}</p>`;
+        return;
+    }
+
+    categoriiGlobale.forEach(categorie => {
+        const toatePreparatele = categorie.preparate || [];
+        const produseCategorie = toatePreparatele.filter(p => p.disponibil === true);
+        
+        if (produseCategorie.length === 0) return;
+
+        const numeAfisat = traduceNumeCategorie(categorie.nume);
+
+        // 1. BUTON NAVIGARE LUXURY
+        const butonNav = document.createElement('button');
+        butonNav.id = `nav-btn-${categorie.id}`;
+        butonNav.className = "nav-item-luxury bg-transparent text-stone-400 border border-transparent text-xs uppercase tracking-widest font-medium px-5 py-2.5 rounded-full whitespace-nowrap snap-center transition-all duration-300 active:scale-95";
+        butonNav.innerText = numeAfisat;
+        butonNav.onclick = () => {
+            document.getElementById(`cat-${categorie.id}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        navContainer.appendChild(butonNav);
+
+        // 2. CONȚINUT CATEGORIE
+        const sectiune = document.createElement('section');
+        sectiune.id = `cat-${categorie.id}`;
+        sectiune.className = "scroll-mt-28 sectiune-meniu-luxury";
+        
+        let htmlSectiune = `
+            <div class="flex flex-col items-center mb-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-luxury font-light text-stone-100 tracking-wide capitalize">
+                    ${numeAfisat}
+                </h2>
+                <div class="w-8 h-[1px] bg-amber-400/30 mt-3"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+        `;
+
+        produseCategorie.forEach(produs => {
+            // Logica de traducere pentru titlu și descriere produs
+            let titluAfisat = produs.titlu;
+            let descriereAfisata = produs.descriere;
+
+            if (limbaCurenta === 'en') {
+                const cheieTitlu = produs.titlu ? produs.titlu.toLowerCase().trim() : "";
+                const cheieDescriere = produs.descriere ? produs.descriere.toLowerCase().trim() : "";
+
+                titluAfisat = dictionarCategorii[cheieTitlu] || produs.titlu;
+                descriereAfisata = dictionarCategorii[cheieDescriere] || produs.descriere;
+            }
+
+            htmlSectiune += `
+                <div class="group flex items-start gap-5 bg-transparent pb-6 border-b border-stone-900/60 hover:border-stone-800 transition-colors duration-300">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-stone-900">
+                        <img src="${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}" 
+                             alt="${titluAfisat}" 
+                             class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500">
+                    </div>
+                    <div class="flex flex-col justify-between flex-1 min-h-[96px] sm:min-h-[112px]">
+                        <div>
+                            <div class="flex justify-between items-baseline gap-4">
+                                <h3 class="text-lg sm:text-xl font-luxury font-medium text-stone-100 group-hover:text-amber-400/90 transition-colors duration-300 leading-tight">${titluAfisat}</h3>
+                               <span class="text-xl sm:text-2xl font-luxury font-semibold text-amber-400 whitespace-nowrap">${produs.pret} <span class="text-xs uppercase font-sans tracking-widest text-stone-500 align-middle ml-0.5">RON</span></span>
+                            </div>
+                            <p class="text-stone-400 text-xs sm:text-sm font-light mt-2 leading-relaxed tracking-wide pr-2">${descriereAfisata}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        htmlSectiune += `</div>`;
+        sectiune.innerHTML = htmlSectiune;
+        container.appendChild(sectiune);
+    });
+
+    creeazaScrollspy();
+}
+
+        function creeazaScrollspy() {
+            const sectiuni = document.querySelectorAll('.sectiune-meniu-luxury');
+            const navContainer = document.getElementById('categorii-nav-container');
+
+            window.addEventListener('scroll', () => {
+                let curentId = "";
+                
+                sectiuni.forEach(sectiune => {
+                    const sectiuneTop = sectiune.offsetTop;
+                    if (window.pageYOffset >= sectiuneTop - 160) {
+                        curentId = sectiune.getAttribute('id').replace('cat-', '');
+                    }
+                });
+
+                document.querySelectorAll('.nav-item-luxury').forEach(buton => {
+                    if (buton.id === `nav-btn-${curentId}`) {
+                        buton.classList.add('text-stone-100', 'bg-stone-900', 'border-stone-800');
+                        buton.classList.remove('text-stone-400', 'bg-transparent', 'border-transparent');
+                        
+                        navContainer.scrollTo({
+                            left: buton.offsetLeft - navContainer.offsetWidth / 2 + buton.offsetWidth / 2,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        buton.classList.remove('text-stone-100', 'bg-stone-900', 'border-stone-800');
+                        buton.classList.add('text-stone-400', 'bg-transparent', 'border-transparent');
+                    }
+                });
+            });
+        }
+    </script>
+    
+    <footer class="border-t border-stone-900/60 mt-15 py-8 text-center text-stone-500 text-xs tracking-[0.2em] font-light">
+        <p>&copy; 2026 Pizza Bonita. <span data-ro="Toate drepturile rezervate." data-en="All rights reserved.">Toate drepturile rezervate.</span></p>
+        <p>Vrei un meniu online? <a href="tel:+40736263753" class="text-amber-400 hover:text-amber-300 font-medium transition-colors duration-200">0736 263 753</a></p>
+    </footer>
+</body>
+</html>
