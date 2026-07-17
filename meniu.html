@@ -24,6 +24,14 @@
 </head>
 <body class="bg-zinc-950 text-stone-200 min-h-screen pb-24 selection:bg-amber-400 selection:text-black">
 
+    <!-- MODAL PENTRU MĂRIRE IMAGINE PRODUS -->
+<div id="modal-imagine" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onclick="inchideModal()">
+    <div class="relative bg-zinc-900 p-2 rounded-xl border border-stone-800 shadow-2xl active:scale-95 transition-transform" onclick="event.stopPropagation()">
+        <button onclick="inchideModal()" class="absolute -top-3 -right-3 bg-amber-400 text-zinc-950 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shadow-lg hover:bg-amber-300 transition-colors">✕</button>
+        <img id="imagine-zoom" src="" alt="Produs" class="w-[320px] h-[320px] object-cover rounded-lg">
+    </div>
+</div>
+
     <div id="banner-oferta" class="hidden bg-stone-900 text-amber-400 text-xs uppercase tracking-widest py-3 px-4 text-center sticky top-0 z-50 border-b border-amber-500/20 backdrop-blur-md bg-stone-900/90 transition-all duration-300">
         <p id="text-oferta" class="font-medium opacity-90"></p>
     </div>
@@ -727,9 +735,10 @@
             htmlSectiune += `
                 <div class="group flex items-start gap-5 bg-transparent pb-6 border-b border-stone-900/60 hover:border-stone-800 transition-colors duration-300">
                     <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-stone-900">
-                        <img src="${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}" 
-                             alt="${titluAfisat}" 
-                             class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500">
+                       <img src="${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}" 
+     alt="${titluAfisat}" 
+     onclick="deschideModal('${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}')"
+     class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 cursor-pointer">
                     </div>
                     <div class="flex flex-col justify-between flex-1 min-h-[96px] sm:min-h-[112px]">
                         <div>
@@ -782,6 +791,23 @@
                 });
             });
         }
+
+  function deschideModal(urlImagine) {
+    const modal = document.getElementById('modal-imagine');
+    const img = document.getElementById('imagine-zoom');
+    img.src = urlImagine;
+    modal.classList.remove('hidden');
+    // Blochează scroll-ul pe pagină când modalul e deschis
+    document.body.style.overflow = 'hidden';
+}
+
+function inchideModal() {
+    const modal = document.getElementById('modal-imagine');
+    modal.classList.add('hidden');
+    // Reactivează scroll-ul pe pagină
+    document.body.style.overflow = '';
+}
+        
     </script>
     
     <footer class="border-t border-stone-900/60 mt-15 py-8 text-center text-stone-500 text-xs tracking-[0.2em] font-light">
