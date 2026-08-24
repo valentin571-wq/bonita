@@ -15,122 +15,163 @@
         .font-luxury { font-family: 'Cormorant Garamond', serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        
-        
-        
-        
     </style>
 </head>
 <body class="bg-zinc-950 text-stone-200 min-h-screen pb-24 selection:bg-amber-400 selection:text-black">
+    
+    <!-- MODAL PENTRU MĂRIRE IMAGINE ȘI DETALII NUTRIȚIONALE -->
+    <div id="modal-imagine" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onclick="inchideModal()">
+        <div class="relative bg-zinc-900 p-5 rounded-2xl border border-stone-800 shadow-2xl max-w-sm w-full max-h-[80vh] overflow-y-auto my-auto" onclick="event.stopPropagation()">
+            <button onclick="inchideModal()" class="absolute top-3 right-3 bg-amber-400 text-zinc-950 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shadow-lg hover:bg-amber-300 transition-colors z-10">✕</button>
+            
+            <img id="imagine-zoom" src="" alt="Produs" class="w-full h-64 object-cover rounded-xl mb-4">
+            
+            <div class="flex justify-between items-baseline gap-2 mb-2">
+                <h3 id="modal-titlu" class="text-2xl font-luxury font-medium text-stone-100"></h3>
+                <span id="modal-pret" class="text-xl font-luxury font-semibold text-amber-400 whitespace-nowrap"></span>
+            </div>
 
-    <!-- MODAL PENTRU MĂRIRE IMAGINE PRODUS -->
-<div id="modal-imagine" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onclick="inchideModal()">
-    <div class="relative bg-zinc-900 p-2 rounded-xl border border-stone-800 shadow-2xl active:scale-95 transition-transform" onclick="event.stopPropagation()">
-        <button onclick="inchideModal()" class="absolute -top-3 -right-3 bg-amber-400 text-zinc-950 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shadow-lg hover:bg-amber-300 transition-colors">✕</button>
-        <img id="imagine-zoom" src="" alt="Produs" class="w-[320px] h-[320px] object-cover rounded-lg">
+            <div id="modal-nutritie-container" class="hidden mt-4 pt-4 border-t border-stone-800">
+                <h4 class="text-xs uppercase tracking-widest text-amber-400 font-medium mb-2" data-ro="Valori Nutriționale & Alergeni" data-en="Nutritional Info & Allergens">Valori Nutriționale & Alergeni</h4>
+                <p id="modal-nutritie-text" class="text-xs text-stone-300 font-light leading-relaxed whitespace-pre-line bg-zinc-950/60 p-3 rounded-lg border border-stone-800/80"></p>
+            </div>
+        </div>
     </div>
-</div>
 
-    <div id="banner-oferta" class="hidden bg-stone-900 text-amber-400 text-xs uppercase tracking-widest py-3 px-4 text-center sticky top-0 z-50 border-b border-amber-500/20 backdrop-blur-md bg-stone-900/90 transition-all duration-300">
-        <p id="text-oferta" class="font-medium opacity-90"></p>
-    </div>
-
+    
+   
+    
+    <!-- BUTON SCHIMBARE LIMBA -->
     <div class="fixed bottom-8 right-8 z-50">
         <button id="btn-limba" onclick="comutaLimba()" class="bg-stone-900/80 backdrop-blur-md hover:bg-stone-800 text-stone-300 hover:text-white border border-stone-800 rounded-full px-5 py-3 flex items-center gap-2 text-xs tracking-widest uppercase transition-all duration-300 shadow-2xl active:scale-95">
             <span id="text-limba-buton">English</span>
         </button>
     </div>
 
-   <header class="relative h-[45vh] flex flex-col justify-center items-center text-center px-4 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(9, 9, 11, 0.4), rgba(9, 9, 11, 1)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=80');">
+    <!-- HEADER CU LOGO -->
+    <header class="relative h-[45vh] flex flex-col justify-center items-center text-center px-4 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(9, 9, 11, 0.4), rgba(9, 9, 11, 1)), url('https://i.ibb.co/LX5VhkJ6/997-1521x649.webp');">
     
-    <!-- BUTON APEL LUXURY EXTINS PERMANENT -->
-    <div class="absolute top-6 right-6 z-30">
-        <a href="tel:+40371111555" class="flex items-center gap-2.5 bg-zinc-950/60 backdrop-blur-md border border-amber-400/40 py-2 px-4 rounded-full text-amber-400 shadow-lg shadow-black/30 transition-all duration-300 hover:border-amber-400 hover:bg-zinc-950/80">
+        <!-- BUTON APEL LUXURY EXTINS PERMANENT -->
+        <div class="absolute top-6 right-6 z-30">
+            <a href="tel:+40371111555" class="flex items-center gap-2.5 bg-zinc-950/60 backdrop-blur-md border border-amber-400/40 py-2 px-4 rounded-full text-amber-400 shadow-lg shadow-black/30 transition-all duration-300 hover:border-amber-400 hover:bg-zinc-950/80">
+                <span class="text-[10px] uppercase tracking-[0.2em] font-medium text-stone-100 whitespace-nowrap">
+                    <span class="md:hidden" data-ro="Comandă" data-en="Call">Comandă </span>
+                    <span class="hidden md:inline" data-ro="Comandă" data-en="Call Now">Comandă </span>
+                </span>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 shrink-0 text-amber-400">
+                    <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.865l-1.785 1.34a10.584 10.584 0 0 0 5.167 5.167l1.34-1.785a1.875 1.875 0 0 1 1.865-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+        
+        
+        
+        
+        
+
+      <div class="max-w-3xl">
+    <h1 class="flex justify-center">
+        <img 
+            src="https://i.ibb.co/DfFy0J04/file-000000008f44820aaa5811b48f7d9c17.webp" 
+            alt="Pizza Bonita" 
+            class="w-80 md:w-80 lg:w-96 h-auto object-contain" 
+        />
+    </h1>
+
+    <div class="w-12 h-[1px] bg-amber-400/50 mx-auto my-4"></div>
+
+    <div class="flex flex-wrap items-center justify-center gap-3 text-stone-400">
+
+        <span 
+            id="hero-subtitlu"
+            class="text-xs md:text-sm uppercase tracking-[0.2em] font-light"
+            data-ro="STRIP MALL PIPERA"
+            data-en="STRIP MALL PIPERA">
+            STRIP MALL PIPERA
+        </span>
+
+        <span class="w-1 h-1 rounded-full bg-amber-400/60"></span>
+
+        <span class="flex items-center gap-1.5 text-[10px] md:text-xs tracking-[0.15em] text-stone-300 font-light uppercase">
             
-            <!-- TEXTUL (Extins permanent, adaptat pentru mobil/desktop) -->
-            <span class="text-[10px] uppercase tracking-[0.2em] font-medium text-stone-100 whitespace-nowrap">
-                <span class="md:hidden" data-ro="Comandă cu livrare !" data-en="Call">Comandă cu livrare ! </span>
-                <span class="hidden md:inline" data-ro="Comandă cu livrare !" data-en="Call Now">Comandă cu livrare ! </span>
-            </span>
-            
-            <!-- ICONIȚA ÎN DREAPTA -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 shrink-0 text-amber-400">
-                <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.865l-1.785 1.34a10.584 10.584 0 0 0 5.167 5.167l1.34-1.785a1.875 1.875 0 0 1 1.865-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="1.4" 
+                class="w-3.5 h-3.5 text-amber-400/80">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path stroke-linecap="round" d="M12 7v5l3 2"></path>
             </svg>
-        </a>
-    </div>
 
-    <div class="max-w-3xl">
-        <h1 class="flex justify-center">
-  <img 
-    src="https://i.ibb.co/nq5Qt8xp/file-00000000f9a07246958fe944515e378d.png" 
-    alt="Pizza Bonita" 
-    class="w-80 md:w-80 lg:w-96 h-auto object-contain" 
-  />
-</h1>
-        <div class="w-12 h-[1px] bg-amber-400/50 mx-auto my-4"></div>
-        <p id="hero-subtitlu" class="text-stone-400 text-xs md:text-sm uppercase tracking-[0.2em] font-light" data-ro="STRIP MALL PIPERA" data-en="STRIP MALL PIPERA">STRIP MALL PIPERA</p>
-    </div>
-</header>
-
-   <div class="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-xl pt-5 pb-3 border-b border-stone-900/60">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col gap-3">
-        
-        <!-- CORECTAT: Am lăsat justify-start peste tot ca să poți da scroll prin TOATE categoriile pe desktop -->
-        <div id="categorii-nav-container" class="flex gap-3 overflow-x-auto pb-2 justify-start snap-x whitespace-nowrap scroll-smooth scrollbar-luxury">
-        </div>
-        
-        <!-- Textul cu instrucțiuni (doar pentru mobil) -->
-        <div class="flex justify-center items-center gap-2 md:hidden opacity-40">
-            <span class="text-[11px] text-amber-400">‹</span>
-            <p class="text-[10px] uppercase tracking-[0.25em] text-stone-200 font-light">Swipe | Glisează</p>
-            <span class="text-[11px] text-amber-400">›</span>
-        </div>
+            <span>11:00 — 22:00</span>
+        </span>
 
     </div>
 </div>
+    </header>
 
-<!-- STILUL CSS PENTRU BARA LUXURY DE DESKTOP -->
-<style>
-    /* Pe mobil (implicit) ascundem complet scrollbar-ul */
-    .scrollbar-luxury::-webkit-scrollbar {
-        display: none;
-    }
-    .scrollbar-luxury {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
+    <!-- CONTAINER UNIC STICKY (AICI ESTE REZOLVAREA) -->
+    <div class="sticky top-0 z-40 w-full">
+        <!-- 1. BANNER HAPPY HOUR (CÂND E ACTIV, AFARE PRIMUL SUS) -->
+        <div id="banner-oferta" class="hidden bg-stone-900 text-amber-400 text-xs uppercase tracking-widest py-3 px-4 text-center border-b border-amber-500/20 backdrop-blur-md bg-stone-900/90 transition-all duration-300">
+            <p id="text-oferta" class="font-medium opacity-90"></p>
+        </div>
 
-    /* Pe desktop (de la ecran de tabletă/laptop în sus) activăm bara fină */
-    @media (min-width: 768px) {
+        <!-- 2. BARA DE CATEGORII / SWIPE (STĂ FIX SUB BANNER) -->
+        <div class="bg-zinc-950/80 backdrop-blur-xl pt-5 pb-3 border-b border-stone-900/60">
+            <div class="max-w-5xl mx-auto px-6 flex flex-col gap-3">
+                <div id="categorii-nav-container" class="flex gap-3 overflow-x-auto pb-2 justify-start snap-x whitespace-nowrap scroll-smooth scrollbar-luxury">
+                </div>
+                
+                <div class="flex justify-center items-center gap-2 md:hidden opacity-40">
+                    <span class="text-[11px] text-amber-400">‹</span>
+                    <p class="text-[10px] uppercase tracking-[0.25em] text-stone-200 font-light">Swipe | Glisează</p>
+                    <span class="text-[11px] text-amber-400">›</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+
+    <!-- STILUL CSS PENTRU BARA LUXURY DE DESKTOP -->
+    <style>
         .scrollbar-luxury::-webkit-scrollbar {
-            display: block;
-            height: 3px; /* O facem ultra-subțire și discretă */
+            display: none;
         }
-        /* Fundalul șinei pe care alunecă bara */
-        .scrollbar-luxury::-webkit-scrollbar-track {
-            background: rgba(41, 37, 36, 0.3); /* Un stone-800 foarte transparent */
-            border-radius: 10px;
-        }
-        /* Partea mobilă (care alunecă) - o facem auriu fin */
-        .scrollbar-luxury::-webkit-scrollbar-thumb {
-            background: rgba(251, 191, 36, 0.4); /* Amber-400 cu opacitate, stil discret */
-            border-radius: 10px;
-            transition: background 0.3s ease;
-        }
-        /* Când utilizatorul pune mouse-ul pe ea, se aprinde puțin mai tare */
-        .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
-            background: rgba(251, 191, 36, 0.8);
-        }
-        /* Reactivăm scrollbar-ul standard pentru Firefox pe desktop */
         .scrollbar-luxury {
-            -ms-overflow-style: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(251, 191, 36, 0.4) rgba(41, 37, 36, 0.3);
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-    }
-</style>
+
+        @media (min-width: 768px) {
+            .scrollbar-luxury::-webkit-scrollbar {
+                display: block;
+                height: 3px;
+            }
+            .scrollbar-luxury::-webkit-scrollbar-track {
+                background: rgba(41, 37, 36, 0.3);
+                border-radius: 10px;
+            }
+            .scrollbar-luxury::-webkit-scrollbar-thumb {
+                background: rgba(251, 191, 36, 0.4);
+                border-radius: 10px;
+                transition: background 0.3s ease;
+            }
+            .scrollbar-luxury::-webkit-scrollbar-thumb:hover {
+                background: rgba(251, 191, 36, 0.8);
+            }
+            .scrollbar-luxury {
+                -ms-overflow-style: auto;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(251, 191, 36, 0.4) rgba(41, 37, 36, 0.3);
+            }
+        }
+    </style>
 
     <main class="max-w-5xl mx-auto px-6 mt-12">
         <div id="loading" class="text-center py-24 text-stone-500 text-xs uppercase tracking-widest font-light" data-ro="Experiența culinară se încarcă..." data-en="The culinary experience is loading...">
@@ -159,8 +200,9 @@
         let setariOferta = null;
         let limbaCurenta = 'ro';
 
-        const dictionarCategorii = {
-    // CATEGORII PRINCIPALE & NAVIGARE
+        const dictionarCategorii = { 
+            
+            // CATEGORII PRINCIPALE & NAVIGARE
     "pizza": "Pizza",
     "pizza clasica": "Classic Pizza",
     "pizza speciala": "Special Pizza",
@@ -237,7 +279,7 @@
     // INGREDIENTE & DESCRIERI PIZZA
     "sos de roșii, mozzarella": "tomato sauce, mozzarella",
     "sos de roșii, mozzarella di bufala, busuioc": "tomato sauce, mozzarella di bufala, basil",
-    "sos de roșii, mozzarella, șuncă": "tomato sauce, mozzarella, ham",
+    "sos de roșii, mozzarella, şuncă": "tomato sauce, mozzarella, ham",
     "sos de roșii, mozzarella, șuncă, ciuperci": "tomato sauce, mozzarella, ham, mushrooms",
     "sos de roșii, mozzarella, șuncă, ciuperci, anghinare": "tomato sauce, mozzarella, ham, mushrooms, artichoke",
     "sos de roșii, mozzarella, chorizo, ceapă roșie": "tomato sauce, mozzarella, chorizo, red onion",
@@ -599,6 +641,26 @@
     "strongbow red berries": "Strongbow Red Berries Cider",
     "paulaner n.a.": "Paulaner Non-Alcoholic",
     "heineken n.a.": "Heineken Non-Alcoholic",
+    
+    
+    // SCHNITZEL
+"șnitel clasic": "Classic Chicken Schnitzel",
+"șnitel cașcaval": "Cheese Chicken Schnitzel",
+"șnitel quattro formaggi": "Quattro Formaggi Chicken Schnitzel",
+"șnitel bacon și ou": "Bacon & Egg Chicken Schnitzel",
+
+// DESCRIERI SCHNITZEL
+"piept de pui, ou, pesmet, cartofi prăjiți, sos cheddar. - 420 g":
+    "chicken breast, egg, breadcrumbs, fries, cheddar sauce. - 420 g",
+
+"piept de pui, ou pesmet sos de roșii, mozzarella, cartofi prăjiți, sos cheddar. - 450g":
+    "chicken breast, egg, breadcrumbs, tomato sauce, mozzarella, fries, cheddar sauce. - 450g",
+
+"piept de pui, ou, pesmet, mozzarella, cascaval, gorgonzola, parmezan, cartofi prăjiți, sos cheddar. - 450g":
+    "chicken breast, egg, breadcrumbs, mozzarella, cheese, gorgonzola, parmesan, fries, cheddar sauce. - 450g",
+    
+"piept de pui, ou, pesmet, sos de rosii mozzarella, bacon, ou, cartofi prăjiţi, sos cheddar. - 470g":
+    "chicken breast, egg, breadcrumbs, tomato sauce, mozzarella, bacon, egg, fries, cheddar sauce. - 470g",
 
     // SOFT DRINKS
     "pepsi": "Pepsi",
@@ -613,7 +675,7 @@
     "plată, minerală - 330ml": "still, sparkling - 330ML",
     "plată, minerală - 750ml": "still, sparkling - 750ML",
     "redbull": "Red Bull"
-};
+        };
 
         function traduceNumeCategorie(nume) {
             if (limbaCurenta === 'ro') return nume;
@@ -664,102 +726,106 @@
             }
         }
 
-        // OPTIMIZARE CRUCIALĂ: Încărcăm DOAR colecția categorii (preparatele se află acum în array-ul "preparate" din fiecare categorie)
         db.collection("categorii").orderBy("ordine", "asc").onSnapshot((snapshotCategorii) => {
             categoriiGlobale = snapshotCategorii.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             randeazaMeniu();
         });
 
-      
         function randeazaMeniu() {
-    const container = document.getElementById('meniu-container');
-    const navContainer = document.getElementById('categorii-nav-container');
-    const loading = document.getElementById('loading');
-    
-    loading.classList.add('hidden');
-    container.innerHTML = "";
-    navContainer.innerHTML = "";
+            const container = document.getElementById('meniu-container');
+            const navContainer = document.getElementById('categorii-nav-container');
+            const loading = document.getElementById('loading');
+            
+            loading.classList.add('hidden');
+            container.innerHTML = "";
+            navContainer.innerHTML = "";
 
-    if (categoriiGlobale.length === 0) {
-        const mesajGol = limbaCurenta === 'ro' ? 'Meniul este indisponibil momentan.' : 'The menu is currently unavailable.';
-        container.innerHTML = `<p class="text-center text-stone-500 font-light text-sm">${mesajGol}</p>`;
-        return;
-    }
-
-    categoriiGlobale.forEach(categorie => {
-        const toatePreparatele = categorie.preparate || [];
-        const produseCategorie = toatePreparatele.filter(p => p.disponibil === true);
-        
-        if (produseCategorie.length === 0) return;
-
-        const numeAfisat = traduceNumeCategorie(categorie.nume);
-
-        // 1. BUTON NAVIGARE LUXURY
-        const butonNav = document.createElement('button');
-        butonNav.id = `nav-btn-${categorie.id}`;
-        butonNav.className = "nav-item-luxury bg-transparent text-stone-400 border border-transparent text-xs uppercase tracking-widest font-medium px-5 py-2.5 rounded-full whitespace-nowrap snap-center transition-all duration-300 active:scale-95";
-        butonNav.innerText = numeAfisat;
-        butonNav.onclick = () => {
-            document.getElementById(`cat-${categorie.id}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
-        };
-        navContainer.appendChild(butonNav);
-
-        // 2. CONȚINUT CATEGORIE
-        const sectiune = document.createElement('section');
-        sectiune.id = `cat-${categorie.id}`;
-        sectiune.className = "scroll-mt-28 sectiune-meniu-luxury";
-        
-        let htmlSectiune = `
-            <div class="flex flex-col items-center mb-12 text-center">
-                <h2 class="text-3xl md:text-4xl font-luxury font-light text-stone-100 tracking-wide capitalize">
-                    ${numeAfisat}
-                </h2>
-                <div class="w-8 h-[1px] bg-amber-400/30 mt-3"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-        `;
-
-        produseCategorie.forEach(produs => {
-            // Logica de traducere pentru titlu și descriere produs
-            let titluAfisat = produs.titlu;
-            let descriereAfisata = produs.descriere;
-
-            if (limbaCurenta === 'en') {
-                const cheieTitlu = produs.titlu ? produs.titlu.toLowerCase().trim() : "";
-                const cheieDescriere = produs.descriere ? produs.descriere.toLowerCase().trim() : "";
-
-                titluAfisat = dictionarCategorii[cheieTitlu] || produs.titlu;
-                descriereAfisata = dictionarCategorii[cheieDescriere] || produs.descriere;
+            if (categoriiGlobale.length === 0) {
+                const mesajGol = limbaCurenta === 'ro'
+    ? 'Meniul nu s-a încărcat. Vă rugăm să reîncărcați pagina.'
+    : 'The menu did not load. Please refresh the page.';
+                container.innerHTML = `<p class="text-center text-stone-500 font-light text-sm">${mesajGol}</p>`;
+                return;
             }
 
-            htmlSectiune += `
-                <div class="group flex items-start gap-5 bg-transparent pb-6 border-b border-stone-900/60 hover:border-stone-800 transition-colors duration-300">
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-stone-900">
-                       <img src="${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}" 
-     alt="${titluAfisat}" 
-     onclick="deschideModal('${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}')"
-     class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 cursor-pointer">
+            categoriiGlobale.forEach(categorie => {
+                const toatePreparatele = categorie.preparate || [];
+                const produseCategorie = toatePreparatele.filter(p => p.disponibil === true);
+                
+                if (produseCategorie.length === 0) return;
+
+                const numeAfisat = traduceNumeCategorie(categorie.nume);
+
+                // 1. BUTON NAVIGARE LUXURY
+                const butonNav = document.createElement('button');
+                butonNav.id = `nav-btn-${categorie.id}`;
+                butonNav.className = "nav-item-luxury bg-transparent text-stone-400 border border-transparent text-xs uppercase tracking-widest font-medium px-5 py-2.5 rounded-full whitespace-nowrap snap-center transition-all duration-300 active:scale-95";
+                butonNav.innerText = numeAfisat;
+                butonNav.onclick = () => {
+                    document.getElementById(`cat-${categorie.id}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
+                navContainer.appendChild(butonNav);
+
+                // 2. CONȚINUT CATEGORIE
+                const sectiune = document.createElement('section');
+                sectiune.id = `cat-${categorie.id}`;
+                sectiune.className = "scroll-mt-28 sectiune-meniu-luxury";
+                
+                let htmlSectiune = `
+                    <div class="flex flex-col items-center mb-12 text-center">
+                        <h2 class="text-3xl md:text-4xl font-luxury font-light text-stone-100 tracking-wide capitalize">
+                            ${numeAfisat}
+                        </h2>
+                        <div class="w-8 h-[1px] bg-amber-400/30 mt-3"></div>
                     </div>
-                    <div class="flex flex-col justify-between flex-1 min-h-[96px] sm:min-h-[112px]">
-                        <div>
-                            <div class="flex justify-between items-baseline gap-4">
-                                <h3 class="text-lg sm:text-xl font-luxury font-medium text-stone-100 group-hover:text-amber-400/90 transition-colors duration-300 leading-tight">${titluAfisat}</h3>
-                               <span class="text-xl sm:text-2xl font-luxury font-semibold text-amber-400 whitespace-nowrap">${produs.pret} <span class="text-xs uppercase font-sans tracking-widest text-stone-500 align-middle ml-0.5">RON</span></span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                `;
+
+                produseCategorie.forEach(produs => {
+                    let titluAfisat = produs.titlu;
+                    let descriereAfisata = produs.descriere;
+
+                    if (limbaCurenta === 'en') {
+                        const cheieTitlu = produs.titlu ? produs.titlu.toLowerCase().trim() : "";
+                        const cheieDescriere = produs.descriere ? produs.descriere.toLowerCase().trim() : "";
+
+                        titluAfisat = dictionarCategorii[cheieTitlu] || produs.titlu;
+                        descriereAfisata = dictionarCategorii[cheieDescriere] || produs.descriere;
+                    }
+
+                    const areNutritie = produs.nutritie && produs.nutritie.trim() !== '';
+
+                    htmlSectiune += `
+                        <div class="group flex items-start gap-5 bg-transparent pb-6 border-b border-stone-900/60 hover:border-stone-800 transition-colors duration-300">
+                            <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-stone-900">
+                                <img src="${produs.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'}" 
+                                     alt="${titluAfisat}" 
+                                     onclick="deschideModal('${produs.id}')"
+                                     class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 cursor-pointer">
                             </div>
-                            <p class="text-stone-400 text-xs sm:text-sm font-light mt-2 leading-relaxed tracking-wide pr-2">${descriereAfisata}</p>
+                            <div class="flex flex-col justify-between flex-1 min-h-[96px] sm:min-h-[112px]">
+                                <div>
+                                    <div class="flex justify-between items-baseline gap-4">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-lg sm:text-xl font-luxury font-medium text-stone-100 group-hover:text-amber-400/90 transition-colors duration-300 leading-tight">${titluAfisat}</h3>
+                                           
+                                        </div>
+                                        <span class="text-xl sm:text-2xl font-luxury font-semibold text-amber-400 whitespace-nowrap">${produs.pret} <span class="text-xs uppercase font-sans tracking-widest text-stone-500 align-middle ml-0.5">Lei</span></span>
+                                    </div>
+                                    <p class="text-stone-400 text-xs sm:text-sm font-light mt-2 leading-relaxed tracking-wide pr-2">${descriereAfisata}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            `;
-        });
+                    `;
+                });
 
-        htmlSectiune += `</div>`;
-        sectiune.innerHTML = htmlSectiune;
-        container.appendChild(sectiune);
-    });
+                htmlSectiune += `</div>`;
+                sectiune.innerHTML = htmlSectiune;
+                container.appendChild(sectiune);
+            });
 
-    creeazaScrollspy();
-}
+            creeazaScrollspy();
+        }
 
         function creeazaScrollspy() {
             const sectiuni = document.querySelectorAll('.sectiune-meniu-luxury');
@@ -792,22 +858,55 @@
             });
         }
 
-  function deschideModal(urlImagine) {
-    const modal = document.getElementById('modal-imagine');
-    const img = document.getElementById('imagine-zoom');
-    img.src = urlImagine;
-    modal.classList.remove('hidden');
-    // Blochează scroll-ul pe pagină când modalul e deschis
-    document.body.style.overflow = 'hidden';
-}
+        function deschideModal(idProdus) {
+            let produsGasit = null;
 
-function inchideModal() {
-    const modal = document.getElementById('modal-imagine');
-    modal.classList.add('hidden');
-    // Reactivează scroll-ul pe pagină
-    document.body.style.overflow = '';
-}
-        
+            for (const cat of categoriiGlobale) {
+                if (cat.preparate) {
+                    const p = cat.preparate.find(item => item.id === idProdus);
+                    if (p) {
+                        produsGasit = p;
+                        break;
+                    }
+                }
+            }
+
+            if (!produsGasit) return;
+
+            const modal = document.getElementById('modal-imagine');
+            const img = document.getElementById('imagine-zoom');
+            const elTitlu = document.getElementById('modal-titlu');
+            const elPret = document.getElementById('modal-pret');
+            const containerNutritie = document.getElementById('modal-nutritie-container');
+            const elTextNutritie = document.getElementById('modal-nutritie-text');
+
+            img.src = produsGasit.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300';
+            
+            let titluAfisat = produsGasit.titlu;
+            if (limbaCurenta === 'en' && produsGasit.titlu) {
+                const cheie = produsGasit.titlu.toLowerCase().trim();
+                titluAfisat = dictionarCategorii[cheie] || produsGasit.titlu;
+            }
+            
+            elTitlu.innerText = titluAfisat || '';
+            elPret.innerText = produsGasit.pret ? `${produsGasit.pret} Lei` : '';
+
+            if (produsGasit.nutritie && produsGasit.nutritie.trim() !== '') {
+                elTextNutritie.innerText = produsGasit.nutritie;
+                containerNutritie.classList.remove('hidden');
+            } else {
+                containerNutritie.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function inchideModal() {
+            const modal = document.getElementById('modal-imagine');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
     </script>
     
     <footer class="border-t border-stone-900/60 mt-15 py-8 text-center text-stone-500 text-xs tracking-[0.2em] font-light">
