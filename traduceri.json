@@ -1,4 +1,4 @@
- "pizza": "Pizza",
+{ "pizza": "Pizza",
     "pizza clasica": "Classic Pizza",
     "pizza speciala": "Special Pizza",
     "paste": "Pasta",
@@ -470,3 +470,7 @@
     "plată, minerală - 330ml": "still, sparkling - 330ML",
     "plată, minerală - 750ml": "still, sparkling - 750ML",
     "redbull": "Red Bull"
+
+
+
+ }
