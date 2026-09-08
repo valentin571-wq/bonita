@@ -39,8 +39,6 @@
     "cocktails": "Cocktails",
     "beer": "Beer",
     "soft drinks": "Soft Drinks",
-
-    // PIZZA - TITLURI
     "pizza margherita": "Pizza Margherita",
     "pizza bufala margherita": "Pizza Bufala Margherita",
     "pizza prosciutto": "Pizza Prosciutto",
@@ -70,8 +68,6 @@
     "pizza quattro formaggi": "Pizza Quattro Formaggi",
     "pizza misto funghi": "Pizza Misto Funghi",
     "pizza artigianale": "Artisan Pizza",
-
-    // INGREDIENTE & DESCRIERI PIZZA
     "sos de roșii, mozzarella": "tomato sauce, mozzarella",
     "sos de roșii, mozzarella di bufala, busuioc": "tomato sauce, mozzarella di bufala, basil",
     "sos de roșii, mozzarella, şuncă": "tomato sauce, mozzarella, ham",
@@ -100,8 +96,6 @@
     "mozzarella, gorgonzola, emmentaler, parmezan": "mozzarella, gorgonzola, emmentaler, parmesan",
     "cremă de trufe, mozzarella, ciuperci, ciuperci sote": "truffle cream, mozzarella, mushrooms, sauteed mushrooms",
     "mozzarella, ciuperci, gorgonzola, rucola, roșii cherry, speck, parmezan": "mozzarella, mushrooms, gorgonzola, rucola, cherry tomatoes, speck, parmesan",
-
-    // SUPE / CIORBE
     "supă cremă de linte": "Lentil Cream Soup",
     "linte roșie, crutoane, lămâie - 350ml": "red lentils, croutons, lemon - 350ML",
     "ciorbă de legume": "Vegetable Soup",
@@ -110,8 +104,6 @@
     "piept de pui, morcov, țelină, roșii, cartofi, borș - 350ml": "chicken breast, carrot, celery, tomatoes, potatoes, borscht - 350ML",
     "ciorbă de văcuță": "Beef Soup",
     "pulpă văcuță, morcov, țelină, roșii, cartofi, borș - 350ml": "beef chunk, carrot, celery, tomatoes, potatoes, borscht - 350ML",
-
-    // GUSTĂRI RECI
     "hummus clasic": "Classic Hummus",
     "năut, tahina, lămâie, ulei de măsline, condimente - 210g": "chickpeas, tahini, lemon, olive oil, spices - 210G",
     "hummus trufe": "Truffle Hummus",
@@ -144,8 +136,6 @@
     "hummus, babaganoush, moutabal, labneh - 500g": "hummus, babaganoush, moutabal, labneh - 500G",
     "sărmăluțe în foi de viță": "Stuffed Vine Leaves",
     "foi de viță, orez, roșii, pătrunjel, orez, ceapă, condimente, sos de rodie, ulei de măsline - 300g": "vine leaves, rice, tomatoes, parsley, onion, spices, pomegranate sauce, olive oil - 300G",
-
-    // GUSTĂRI CALDE
     "falafel": "Falafel",
     "chiftele de năut, susan, sos tahina, castraveți murați, roșii - 5 buc": "chickpea patties, sesame, tahini sauce, pickled cucumbers, tomatoes - 5 PCS",
     "halloumi": "Halloumi",
@@ -184,8 +174,6 @@
     "cârnați de oaie, roșii, usturoi, condimente, ardei - 250g": "mutton sausages, tomatoes, garlic, spices, pepper - 250G",
     "makanek": "Makanek",
     "cârnați de oaie, lămâie, usturoi, condimente - 200g": "mutton sausages, lemon, garlic, spices - 200G",
-
-    // FEL PRINCIPAL
     "shawarma pui": "Chicken Shawarma",
     "piept de pui, maioneză cu usturoi, salată crudități, cartofi proaspeți prăjiți, condimente - 480g (180/300)": "chicken breast, garlic mayonnaise, raw salad, fresh french fries, spices - 480G (180/300)",
     "shawarma de vită": "Beef Shawarma",
@@ -194,8 +182,6 @@
     "mușchi de berbecuț, cartofi prăjiți, bioaz, maioneză cu usturoi, condimente - 430g (180/250)": "lamb tenderloin, french fries, biwaz, garlic mayonnaise, spices - 430G (180/250)",
     "aripioare pui în sos picant": "Chicken Wings in Hot Sauce",
     "aripioare de pui, sos picant, usturoi, condimente - 350g (250/100)": "chicken wings, hot sauce, garlic, spices - 350G (250/100)",
-
-    // GRĂTAR
     "aripioare de pui la grătar": "Grilled Chicken Wings",
     "aripi de pui, coleslaw, maioneză cu usturoi, cartofi prăjiți - 470g (200/270)": "chicken wings, coleslaw, garlic mayonnaise, french fries - 470G (200/270)",
     "piept de pui la grătar": "Grilled Chicken Breast",
@@ -220,8 +206,6 @@
     "carne tocată vită-oaie, pătrunjel, mozzarella, ceapă, condimente, salată bioaz, lipie pe vatră, legume la grătar - 450g (180/270)": "minced beef-mutton meat, parsley, mozzarella, onion, spices, biwaz salad, hearth baked pita, grilled vegetables - 450G (180/270)",
     "mix grill": "Mix Grill",
     "frigărui pui și vită, kafta, salată bioaz, cartofi prăjiți, legume la grătar - 510g (240/270)": "chicken and beef skewers, kafta, biwaz salad, french fries, grilled vegetables - 510G (240/270)",
-
-    // DIN MARE
     "inele de calamar": "Calamari Rings",
     "inele de calamar, lămâie - 8 buc": "calamari rings, lemon - 8 PCS",
     "creveți el sheikh": "Shrimps El Sheikh",
@@ -230,8 +214,6 @@
     "medalion de somon, lămâie, legume la grătar - 300g (180/120)": "salmon medallion, lemon, grilled vegetables - 300G (180/120)",
     "doradă la grătar": "Grilled Sea Bream",
     "doradă, lămâie, legume la grătar - buc (250/120)": "sea bream, lemon, grilled vegetables - PCS (250/120)",
-
-    // GARNITURI
     "orez": "Rice",
     "orez galben": "Yellow Rice",
     "orez basmatic, șofran - 250g": "basmati rice, saffron - 250G",
@@ -247,8 +229,6 @@
     "cartofi, mentă, usturoi, lămâie - 250g": "potatoes, mint, garlic, lemon - 250G",
     "cartofi iuți": "Spicy French Fries",
     "cartofi, coriandru, pastă ardei iute, lămâie, usturoi - 270g": "potatoes, coriander, hot pepper paste, lemon, garlic - 270G",
-
-    // SALATE
     "tabbouleh": "Tabbouleh",
     "pătrunjel, roșii, ceapă, bulgur, ceapă, lămâie, ulei de măsline, condimente - 250g": "parsley, tomatoes, onion, bulgur, lemon, olive oil, spices - 250G",
     "fattoush": "Fattoush",
@@ -272,16 +252,12 @@
     "salată coleslaw": "Coleslaw Salad",
     "morcov, maioneză, varză albă - 220g": "carrot, mayonnaise, white cabbage - 220G",
     "salata de castraveti murati": "Pickled Cucumbers Salad",
-
-    // PÂINE & SOSURI
     "lipie libaneză pe vatră": "Hearth Baked Lebanese Pita",
     "tarator ( susan )": "Tarator (Sesame Sauce)",
     "tahina, usturoi, lămâie - 50g": "tahini, garlic, lemon - 50G",
     "sos iute": "Hot Sauce",
     "sos roșii, pastă de ardei iute - 50g": "tomato sauce, hot pepper paste - 50G",
     "maioneză cu usturoi": "Garlic Mayonnaise",
-
-    // DESERT
     "baclava cu fistic": "Pistachio Baklava",
     "baclava cu fistic - 4 buc": "pistachio baklava - 4 PCS",
     "kasta": "Kasta",
@@ -292,11 +268,7 @@
     "cremă de mascarpone, pișcoturi, cafea, pudră cacao - 220g": "mascarpone cream, ladyfingers, coffee, cocoa powder - 220G",
     "înghețată asortată": "Assorted Ice Cream",
     "vanilie, caramel, ciocolată - 220g": "vanilla, caramel, chocolate - 220G",
-
-    // NARGHILEA
     "narghilea diverse sortimente": "Hookah Various Flavoured Shisha",
-
-    // BĂUTURI & CAFEA (BAZĂ / INGREDIENTE)
     "espresso short": "Short Espresso",
     "espresso long": "Long Espresso",
     "espresso double": "Double Espresso",
@@ -326,8 +298,6 @@
     "espresso, whisky, frișcă - 200ml": "espresso, whisky, whipped cream - 200ML",
     "bailey's latte": "Bailey's Latte",
     "espresso, lapte, bailey's - 220ml": "espresso, milk, bailey's - 220ML",
-
-    // FRAPPE
     "clasic": "Classic",
     "ness, lapte, frișcă - 400ml": "instant coffee, milk, whipped cream - 400ML",
     "chocolate": "Chocolate",
@@ -342,8 +312,6 @@
     "ness, lapte, snickers, frișcă, înghețată ciocolată, sirop caramel - 400ml": "instant coffee, milk, snickers, whipped cream, chocolate ice cream, caramel syrup - 400ML",
     "m&m": "M&M",
     "ness, lapte, m&m, frișcă, înghețată și sirop de ciocolată - 400ml": "instant coffee, milk, m&m, whipped cream, ice cream and chocolate syrup - 400ML",
-
-    // LIMONADE & JUICE
     "clasică": "Classic",
     "pepene galben": "Melon",
     "fresh lămâie, pepene galben - 500ml": "fresh lemon, melon - 500ML",
@@ -363,8 +331,6 @@
     "grapefruit": "Grapefruit",
     "mix": "Mix Fresh Juice",
     "diverse sortimente": "Assorted Flavours",
-
-    // ALCOOL, VINURI, SPIRITS
     "vin miniatură": "Miniature Wine",
     "alb, roze, roșu - 200ml": "white, rose, red - 200ML",
     "prosecco minitură": "Miniature Prosecco",
@@ -390,7 +356,6 @@
     "jaggermeister": "Jägermeister",
     "tequila": "Tequila Gold/Silver",
 
-    // LONG DRINKS & COCKTAILS
     "cuba libre": "Cuba Libre",
     "rom, pepsi, lime - 300ml": "rum, pepsi, lime - 300ML",
     "screw driver": "Screwdriver",
@@ -422,7 +387,6 @@
     "nada colada": "Nada Colada (Non-Alcoholic)",
     "suc ananas, sirop cocos, frișcă lichidă - 350ml": "pineapple juice, coconut syrup, liquid cream - 350ML",
 
-    // BERE
     "ciuc premium": "Ciuc Premium",
     "heineken": "Heineken",
     "bavaria": "Bavaria",
@@ -437,14 +401,12 @@
     "paulaner n.a.": "Paulaner Non-Alcoholic",
     "heineken n.a.": "Heineken Non-Alcoholic",
     
-    
-    // SCHNITZEL
+
 "șnitel clasic": "Classic Chicken Schnitzel",
 "șnitel cașcaval": "Cheese Chicken Schnitzel",
 "șnitel quattro formaggi": "Quattro Formaggi Chicken Schnitzel",
 "șnitel bacon și ou": "Bacon & Egg Chicken Schnitzel",
 
-// DESCRIERI SCHNITZEL
 "piept de pui, ou, pesmet, cartofi prăjiți, sos cheddar. - 420 g":
     "chicken breast, egg, breadcrumbs, fries, cheddar sauce. - 420 g",
 
@@ -457,7 +419,7 @@
 "piept de pui, ou, pesmet, sos de rosii mozzarella, bacon, ou, cartofi prăjiţi, sos cheddar. - 470g":
     "chicken breast, egg, breadcrumbs, tomato sauce, mozzarella, bacon, egg, fries, cheddar sauce. - 470g",
 
-    // SOFT DRINKS
+
     "pepsi": "Pepsi",
     "pepsi twist": "Pepsi Twist",
     "pepsi max": "Pepsi Max",
