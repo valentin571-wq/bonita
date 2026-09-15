@@ -262,6 +262,32 @@
             return cuvinteBauturi.some(cuvant => numeLower.includes(cuvant));
         }
 
+        function esteCategorieDisponibila(categorie) {
+    // Dacă nu are setată disponibilitate, o considerăm permanentă
+    if (categorie.disponibilitate !== "interval") {
+        return true;
+    }
+
+    if (!categorie.oraInceput || !categorie.oraSfarsit) {
+        return true;
+    }
+
+    const acum = new Date();
+    const oraCurenta = `${String(acum.getHours()).padStart(2, '0')}:${String(acum.getMinutes()).padStart(2, '0')}`;
+
+    const inceput = categorie.oraInceput;
+    const sfarsit = categorie.oraSfarsit;
+
+    // Interval normal, ex. 10:00 - 19:00
+    if (inceput <= sfarsit) {
+        return oraCurenta >= inceput && oraCurenta < sfarsit;
+    }
+
+    // Interval care trece peste miezul nopții, ex. 20:00 - 02:00
+    return oraCurenta >= inceput || oraCurenta < sfarsit;
+}
+        
+
         db.collection("setari").doc("oferta").onSnapshot((doc) => {
             if (doc.exists) {
                 setariOferta = doc.data();
@@ -316,10 +342,15 @@
             }
 
             // Filtrare categorii în funcție de tipul selectat (Mâncare / Băutură)
-            const categoriiFiltrate = categoriiGlobale.filter(cat => {
-                const bautura = esteBautura(cat);
-                return tipMeniuCurent === 'bautura' ? bautura : !bautura;
-            });
+           const categoriiFiltrate = categoriiGlobale.filter(cat => {
+    const bautura = esteBautura(cat);
+
+    if (!esteCategorieDisponibila(cat)) {
+        return false;
+    }
+
+    return tipMeniuCurent === 'bautura' ? bautura : !bautura;
+});
 
             if (categoriiFiltrate.length === 0) {
                 const mesajNiciunProdus = limbaCurenta === 'ro'
