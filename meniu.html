@@ -202,13 +202,34 @@
         let limbaCurenta = 'ro';
         let tipMeniuCurent = 'mancare'; // Default: Mâncare
 
+        // ===== TRADUCERI =====
+        // Normalizare: litere mici, fără diacritice, fără spații în plus.
+        // Se aplică și cheilor din JSON, și textului căutat, deci se potrivesc mereu.
+        const norm = s => (s || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase();
+
         let dictionarCategorii = {};
+
+        // Caută traducerea; dacă nu o găsește, returnează textul original
+        // și afișează în consolă (F12) ce lipsește din traduceri.json
+        function tr(text) {
+            if (!text) return text;
+            const r = dictionarCategorii[norm(text)];
+            if (!r) console.warn('LIPSĂ traducere:', JSON.stringify(text));
+            return r || text;
+        }
 
         // ÎNCĂRCĂM TRADUCERILE DIN TRADUCERI.JSON
         fetch('https://valentin571-wq.github.io/bonita/traduceri.json')
             .then(response => response.json())
             .then(data => {
-                dictionarCategorii = data;
+                dictionarCategorii = Object.fromEntries(
+                    Object.entries(data).map(([k, v]) => [norm(k), v])
+                );
                 if (categoriiGlobale.length > 0) {
                     randeazaMeniu();
                 }
@@ -217,8 +238,7 @@
 
         function traduceNumeCategorie(nume) {
             if (limbaCurenta === 'ro') return nume;
-            let curat = nume.toLowerCase().trim();
-            return dictionarCategorii[curat] || nume;
+            return tr(nume);
         }
 
         function comutaLimba() {
@@ -260,6 +280,32 @@
             const numeLower = (categorie.nume || '').toLowerCase();
             const cuvinteBauturi = ['bauturi', 'băuturi', 'sucuri', 'bere', 'vin', 'vinuri', 'cocktail', 'cocktails', 'coffees', 'cafea', 'răcoritoare', 'racoritoare', 'drinks', 'soft drinks', 'water', 'apa'];
             return cuvinteBauturi.some(cuvant => numeLower.includes(cuvant));
+        }
+
+        // Verifică dacă o categorie este disponibilă acum (categorii cu interval orar)
+        function esteCategorieDisponibila(categorie) {
+            // Dacă nu are setată disponibilitate, o considerăm permanentă
+            if (categorie.disponibilitate !== "interval") {
+                return true;
+            }
+
+            if (!categorie.oraInceput || !categorie.oraSfarsit) {
+                return true;
+            }
+
+            const acum = new Date();
+            const oraCurenta = `${String(acum.getHours()).padStart(2, '0')}:${String(acum.getMinutes()).padStart(2, '0')}`;
+
+            const inceput = categorie.oraInceput;
+            const sfarsit = categorie.oraSfarsit;
+
+            // Interval normal, ex. 10:00 - 19:00
+            if (inceput <= sfarsit) {
+                return oraCurenta >= inceput && oraCurenta < sfarsit;
+            }
+
+            // Interval care trece peste miezul nopții, ex. 20:00 - 02:00
+            return oraCurenta >= inceput || oraCurenta < sfarsit;
         }
 
         db.collection("setari").doc("oferta").onSnapshot((doc) => {
@@ -315,8 +361,12 @@
                 return;
             }
 
-            // Filtrare categorii în funcție de tipul selectat (Mâncare / Băutură)
+            // Filtrare categorii în funcție de tipul selectat (Mâncare / Băutură) și de disponibilitate
             const categoriiFiltrate = categoriiGlobale.filter(cat => {
+                if (!esteCategorieDisponibila(cat)) {
+                    return false;
+                }
+
                 const bautura = esteBautura(cat);
                 return tipMeniuCurent === 'bautura' ? bautura : !bautura;
             });
@@ -374,11 +424,8 @@
                     let descriereAfisata = produs.descriere;
 
                     if (limbaCurenta === 'en') {
-                        const cheieTitlu = produs.titlu ? produs.titlu.toLowerCase().trim() : "";
-                        const cheieDescriere = produs.descriere ? produs.descriere.toLowerCase().trim() : "";
-
-                        titluAfisat = dictionarCategorii[cheieTitlu] || produs.titlu;
-                        descriereAfisata = dictionarCategorii[cheieDescriere] || produs.descriere;
+                        titluAfisat = tr(produs.titlu);
+                        descriereAfisata = tr(produs.descriere);
                     }
 
                     htmlSectiune += `
@@ -467,17 +514,13 @@
 
             img.src = produsGasit.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300';
             
-            let titluAfisat = produsGasit.titlu;
-            if (limbaCurenta === 'en' && produsGasit.titlu) {
-                const cheie = produsGasit.titlu.toLowerCase().trim();
-                titluAfisat = dictionarCategorii[cheie] || produsGasit.titlu;
-            }
+            let titluAfisat = limbaCurenta === 'en' ? tr(produsGasit.titlu) : produsGasit.titlu;
             
             elTitlu.innerText = titluAfisat || '';
             elPret.innerText = produsGasit.pret ? `${produsGasit.pret} Lei` : '';
 
             if (produsGasit.nutritie && produsGasit.nutritie.trim() !== '') {
-                elTextNutritie.innerText = produsGasit.nutritie;
+                elTextNutritie.innerText = limbaCurenta === 'en' ? tr(produsGasit.nutritie) : produsGasit.nutritie;
                 containerNutritie.classList.remove('hidden');
             } else {
                 containerNutritie.classList.add('hidden');
