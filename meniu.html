@@ -400,18 +400,14 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 `;
-
+produseCategorie.forEach(produs => {
                 let titluAfisat = produs.titlu;
 let descriereAfisata = produs.descriere;
 
 if (limbaCurenta === 'en') {
-    const cheieTitlu = produs.titlu ? produs.titlu.toLowerCase().trim() : "";
-    const cheieDescriere = produs.descriere ? produs.descriere.toLowerCase().trim() : "";
-
-    titluAfisat = dictionarCategorii[cheieTitlu] || produs.titlu;
-    descriereAfisata = dictionarCategorii[cheieDescriere] || produs.descriere;
+    titluAfisat = tr(produs.titlu);
+    descriereAfisata = tr(produs.descriere);
 }
-
                     htmlSectiune += `
                         <div class="group flex items-start gap-5 bg-transparent pb-6 border-b border-stone-900/60 hover:border-stone-800 transition-colors duration-300">
                             <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-stone-900">
@@ -498,11 +494,7 @@ if (limbaCurenta === 'en') {
 
             img.src = produsGasit.imagineUrl || 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300';
             
-            let titluAfisat = produsGasit.titlu;
-            if (limbaCurenta === 'en' && produsGasit.titlu) {
-                const cheie = produsGasit.titlu.toLowerCase().trim();
-                titluAfisat = dictionarCategorii[cheie] || produsGasit.titlu;
-            }
+            let titluAfisat = limbaCurenta === 'en' ? tr(produsGasit.titlu) : produsGasit.titlu;
             
             elTitlu.innerText = titluAfisat || '';
             elPret.innerText = produsGasit.pret ? `${produsGasit.pret} Lei` : '';
